@@ -127,9 +127,22 @@ authRouter.post("/login", async (req, res) => {
   const token = jwt.sign({ loggedInUserId }, process.env.SECRET_KEY, {
     expiresIn: "12h", // 토큰 만료 시간 12시간 설정
   });
-  res.setHeader("Authorization", "Bearer " + token); // singular header를 설정할 것이기에 setHeader 사용
+
+  res.cookie("Authorization", "Bearer " + token); // singular header를 설정할 것이기에 setHeader 사용
 
   return res.status(200).send({ token });
+});
+
+authRouter.post("/logout", (req, res) => {
+  try {
+    res.clearCookie("Authorization");
+    return res.status(200).send({ ...resBody(true, "로그아웃 됐습니다.") });
+  } catch (error) {
+    console.error(error);
+    return res
+      .status(500)
+      .send({ ...resBody(500, "로그아웃에 실패했습니다.") });
+  }
 });
 
 module.exports = authRouter;
