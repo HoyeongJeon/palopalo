@@ -1,5 +1,8 @@
 require("dotenv").config();
 const express = require("express");
+const authRouter = require("./routers/authRouter");
+const postRouter = require("./routers/postRouter");
+
 const app = express();
 const PORT = 3000;
 
