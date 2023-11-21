@@ -14,6 +14,7 @@ const resBody = (success, message) => {
 
 const authMiddleware = (req, res, next) => {
   const { Authorization } = req.cookies;
+  console.log(Authorization);
   if (!Authorization) {
     return res.status(401).send({ ...resBody(false, "로그인 해주세요") });
   }
