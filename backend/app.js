@@ -1,5 +1,6 @@
 require("dotenv").config();
 const express = require("express");
+const cookieParser = require("cookie-parser");
 const authRouter = require("./routers/authRouter");
 const postRouter = require("./routers/postRouter");
 const authMiddleware = require("./middlewares/authMiddleware");
@@ -7,6 +8,7 @@ const authMiddleware = require("./middlewares/authMiddleware");
 const app = express();
 const PORT = 3000;
 
+app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
