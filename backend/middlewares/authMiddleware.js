@@ -4,16 +4,21 @@ const {
   NotBeforeError,
   TokenExpiredError,
 } = require("jsonwebtoken");
-const { resBody } = require("../routers/authRouter");
+
+const resBody = (success, message) => {
+  return {
+    success,
+    message,
+  };
+};
 
 const authMiddleware = (req, res, next) => {
-  const { authorization } = req.headers;
-  //
-  if (!authorization) {
+  const { Authorization } = req.cookies;
+  if (!Authorization) {
     return res.status(401).send({ ...resBody(false, "로그인 해주세요") });
   }
   // 토큰 표준과 일치하지 않는 경우
-  const [tokenType, tokenCredential] = authorization.split(" ");
+  const [tokenType, tokenCredential] = Authorization.split(" ");
   if (!tokenType || !tokenCredential || tokenType !== "Bearer") {
     // 토큰 중 하나라도 없는 경우
     return res.status(401).send({ ...resBody(false, "로그인 해주세요") });
