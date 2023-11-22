@@ -25,3 +25,5 @@ app.get("/", authMiddleware, (req, res) => {
 app.listen(process.env.PORT, () => {
   console.log(`App listening on PORT ${process.env.PORT}`);
 });
+
+//test
