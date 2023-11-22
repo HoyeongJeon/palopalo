@@ -7,6 +7,7 @@ const authMiddleware = require("../middlewares/authMiddleware.js");
 
 //글작성
 
+const { User } = require("../../models");
 const { Post } = require("../../models");
 const { Comment } = require("../../models");
 
@@ -81,11 +82,14 @@ postRouter.get("/", async (req, res) => {
 //댓글 작성
 postRouter.post("/:postId/comment", authMiddleware, async (req, res) => {
   const { postId } = req.params;
-  const { userEmail } = res.locals.user;
+  const { loggedInUserId } = res.locals;
 
   const { text } = req.body;
 
   const post = await Post.findByPk(postId);
+  const user = await User.findOne({
+    where: { loggedInUserId },
+  });
 
   try {
     if (!post) {
