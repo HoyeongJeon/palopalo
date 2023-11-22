@@ -112,12 +112,15 @@ postRouter.post("/:postId/comment", authMiddleware, async (req, res) => {
 
 postRouter.get("/:postId/comments", async (req, res) => {
   const { postId } = req.params;
+  const post = await Post.findOne({
+    where: { id: postId },
+  });
   const comments = await Comment.findAll({
     where: { PostId: postId },
   });
 
   try {
-    if (!comments) {
+    if (!post) {
       return res
         .status(404)
         .send({ errorMessage: "게시글이 존재하지 않습니다." });
