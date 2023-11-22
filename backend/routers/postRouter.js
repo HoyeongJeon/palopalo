@@ -113,6 +113,22 @@ postRouter.get("/:postId", async (req, res) => {
   return res.status(200).json({ success: true, data: post });
 });
 
+// 글 상세 조회 API
+postRouter.get("/:postId", async (req, res) => {
+  const { postId } = req.params;
+
+  const post = await Post.findOne({
+    where: { id: postId },
+    attributes: ["title", "content", "photo"],
+  });
+
+  if (!post) {
+    return res.status(400).json({ errorMessage: "작성된 글이 없습니다." });
+  }
+
+  res.status(200).json({ post });
+});
+
 //댓글 작성
 postRouter.post("/:postId/comment", authMiddleware, async (req, res) => {
   const { postId } = req.params;
