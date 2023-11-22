@@ -7,7 +7,6 @@ const recommendationRouter = require("./routers/recommendationRouter");
 const authMiddleware = require("./middlewares/authMiddleware");
 
 const app = express();
-const PORT = 3000;
 
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
@@ -21,6 +20,6 @@ app.get("/", authMiddleware, (req, res) => {
   res.send("Hello World!");
 });
 
-app.listen(PORT, () => {
-  console.log(`App listening on PORT ${PORT}`);
+app.listen(process.env.PORT, () => {
+  console.log(`App listening on PORT ${process.env.PORT}`);
 });
