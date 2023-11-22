@@ -1,6 +1,6 @@
 const express = require("express");
-const { Op } = require("sequelize");
-const { User, sequelize } = require("../../models");
+const { Op, where } = require("sequelize");
+const { User, sequelize, Userinfo } = require("../../models");
 const authMiddleware = require("../middlewares/authMiddleware");
 
 const recommendationRouter = express.Router();
@@ -20,13 +20,23 @@ recommendationRouter.get("/", authMiddleware, async (req, res) => {
   }
 
   // 로그인 한 유저의 지역 찾기
-  const { location } = await User.findByPk(loggedInUserId);
+  console.log(loggedInUserId);
+  const a = await Userinfo.findOne({
+    where: {
+      userId: loggedInUserId,
+    },
+  });
+  const { location } = await Userinfo.findOne({
+    where: {
+      userId: loggedInUserId,
+    },
+  });
 
   // 로그인 한 유저랑 같은 지역의 사람 찾기
-  const potentialFriends = await User.findAll({
+  const potentialFriends = await Userinfo.findAll({
     where: {
       location,
-      id: { [Op.ne]: loggedInUserId },
+      userId: { [Op.ne]: loggedInUserId },
     },
     order: sequelize.random(), // 랜덤 친구 추천
     limit: 3,

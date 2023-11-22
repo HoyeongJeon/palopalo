@@ -2,7 +2,7 @@
 // localhost:3000/auth/
 const express = require("express");
 const { Op } = require("sequelize");
-const { User } = require("../../models");
+const { User, Userinfo } = require("../../models");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const validationCheck = require("../middlewares/validationMiddleware.js");
@@ -67,10 +67,14 @@ authRouter.post("/signup", validationCheck, async (req, res) => {
       email,
       name,
       password: hashedPassword,
+    });
+    const userInfo = await Userinfo.create({
+      userId: user.id,
       nickname,
       location,
       introduce,
     });
+
     // 회원가입 성공 시, 비밀번호를 제외 한 사용자의 정보를 반환
     return res.status(201).send({
       ...resBody(true, "회원가입에 성공했습니다."),
@@ -78,9 +82,9 @@ authRouter.post("/signup", validationCheck, async (req, res) => {
         id: user.id,
         email: user.email,
         name: user.name,
-        nickname: user.nickname,
-        location: user.location,
-        introduce: user.introduce,
+        nickname: userInfo.nickname,
+        location: userInfo.location,
+        introduce: userInfo.introduce,
         createdAt: user.createdAt,
         updatedAt: user.updatedAt,
       },
@@ -128,7 +132,7 @@ authRouter.post("/login", async (req, res) => {
     expiresIn: "12h", // 토큰 만료 시간 12시간 설정
   });
 
-  res.cookie("Authorization", "Bearer " + token); // singular header를 설정할 것이기에 setHeader 사용
+  res.cookie("Authorization", "Bearer " + token);
 
   return res.status(200).send({ token });
 });
