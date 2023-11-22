@@ -8,6 +8,7 @@ const authMiddleware = require("../middlewares/authMiddleware.js");
 //글작성
 
 const { Post } = require("../../models");
+const { Comment } = require("../../models");
 postRouter.post("/", authMiddleware, async (req, res) => {
   const { title, content, photo } = req.body;
   const { loggedInUserId } = res.locals; // 미들웨어에서 추출한 loggedInUserId
@@ -74,6 +75,52 @@ postRouter.delete("/:postId", authMiddleware, async (req, res) => {
 postRouter.get("/", async (req, res) => {
   const posts = await Post.findAll({ order: [["createdAt", "DESC"]] });
   res.status(200).json({ posts });
+});
+
+//댓글 작성
+router.post("/:postId/comment", authMiddleware, async (req, res) => {
+  const { postId } = req.params;
+  const { userEmail } = res.locals.user;
+
+  const { text } = req.body;
+
+  const post = await Post.findByPk(postId);
+
+  try {
+    if (!post) {
+      res.status(400).send({ errorMessage: "게시글이 존재하지 않습니다." });
+      return false;
+    }
+    const comment = await Comment.create({
+      PostId: postId,
+      userId: userEmail,
+      text: text,
+    });
+    res.status(200).json(comment, { message: comment });
+  } catch (error) {
+    console.log(`errorMessage: ${error}`);
+  }
+});
+
+// 댓글 조회
+
+router.get("/:postId/comments", async (req, res) => {
+  const { postId } = req.params;
+  const comments = await Comment.findAll({
+    where: { PostId: postId },
+  });
+
+  try {
+    if (!comments) {
+      return res
+        .status(404)
+        .send({ errorMessage: "게시글이 존재하지 않습니다." });
+      return false;
+    }
+    res.status(200).json(comments);
+  } catch (error) {
+    console.log("ErrorMessag:", error);
+  }
 });
 
 module.exports = postRouter;
