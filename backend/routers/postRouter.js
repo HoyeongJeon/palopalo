@@ -72,10 +72,30 @@ postRouter.delete("/:postId", authMiddleware, async (req, res) => {
     .json({ result: "success", message: "상품을 삭제하였습니다." });
 });
 
-//상품목록 조회 API
+//전체 글 조회 API
 postRouter.get("/", async (req, res) => {
-  const posts = await Post.findAll({ order: [["createdAt", "DESC"]] });
+  const posts = await Post.findAll({
+    attributes: ["title", "content", "photo"],
+    order: [["createdAt", "DESC"]],
+  });
+
   res.status(200).json({ posts });
+});
+
+// 글 상세 조회 API
+postRouter.get("/:postId", async (req, res) => {
+  const { postId } = req.params;
+
+  const post = await Post.findOne({
+    where: { id: postId },
+    attributes: ["title", "content", "photo"],
+  });
+
+  if (!post) {
+    return res.status(400).json({ errorMessage: "작성된 글이 없습니다." });
+  }
+
+  res.status(200).json({ post });
 });
 
 //댓글 작성
