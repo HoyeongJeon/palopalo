@@ -18,7 +18,8 @@ const resBody = (success, message) => {
 exports.resBody = resBody;
 
 authRouter.post("/signup", validationCheck, async (req, res) => {
-  // 이메일, 비밀번호, 비밀번호 확인, 이름을 데이터로 넘겨서 회원가입을 요청
+  // favorite weather 아직 안넣음
+
   const {
     email,
     password,
@@ -27,6 +28,7 @@ authRouter.post("/signup", validationCheck, async (req, res) => {
     nickname,
     location,
     introduce,
+    favorite_weather,
   } = req.body;
   if (
     !email ||
@@ -73,9 +75,14 @@ authRouter.post("/signup", validationCheck, async (req, res) => {
       nickname,
       location,
       introduce,
+      favorite_weather: favorite_weather
+        ? favorite_weather
+        : "모든 날씨가 다 좋아~🎶",
     });
 
     // 회원가입 성공 시, 비밀번호를 제외 한 사용자의 정보를 반환
+    // favorite weather 아직 안넣음
+
     return res.status(201).send({
       ...resBody(true, "회원가입에 성공했습니다."),
       data: {
@@ -84,6 +91,7 @@ authRouter.post("/signup", validationCheck, async (req, res) => {
         name: user.name,
         nickname: userInfo.nickname,
         location: userInfo.location,
+        favorite_weather: userInfo.favorite_weather,
         introduce: userInfo.introduce,
         createdAt: user.createdAt,
         updatedAt: user.updatedAt,
