@@ -88,7 +88,7 @@ postRouter.post("/:postId/comment", authMiddleware, async (req, res) => {
 
   const post = await Post.findByPk(postId);
   const user = await User.findOne({
-    where: { loggedInUserId },
+    where: { id: loggedInUserId },
   });
 
   try {
@@ -96,12 +96,13 @@ postRouter.post("/:postId/comment", authMiddleware, async (req, res) => {
       res.status(400).send({ errorMessage: "게시글이 존재하지 않습니다." });
       return false;
     }
+    console.log(user.nickname);
     const comment = await Comment.create({
-      PostId: postId,
-      userId: userEmail,
-      text: text,
+      postId: postId,
+      nickname: user.nickname,
+      content: text,
     });
-    res.status(200).json(comment, { message: comment });
+    res.status(200).json({ message: Comment });
   } catch (error) {
     console.log(`errorMessage: ${error}`);
   }
