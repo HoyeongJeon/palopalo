@@ -78,7 +78,7 @@ postRouter.get("/", async (req, res) => {
 });
 
 //댓글 작성
-router.post("/:postId/comment", authMiddleware, async (req, res) => {
+postRouter.post("/:postId/comment", authMiddleware, async (req, res) => {
   const { postId } = req.params;
   const { userEmail } = res.locals.user;
 
@@ -104,7 +104,7 @@ router.post("/:postId/comment", authMiddleware, async (req, res) => {
 
 // 댓글 조회
 
-router.get("/:postId/comments", async (req, res) => {
+postRouter.get("/:postId/comments", async (req, res) => {
   const { postId } = req.params;
   const comments = await Comment.findAll({
     where: { PostId: postId },
