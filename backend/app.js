@@ -5,6 +5,7 @@ const authRouter = require("./routers/authRouter");
 const postRouter = require("./routers/postRouter");
 const recommendationRouter = require("./routers/recommendationRouter");
 const authMiddleware = require("./middlewares/authMiddleware");
+const userRouter = require("./routers/userRouter");
 
 const app = express();
 
@@ -15,6 +16,7 @@ app.use(express.json());
 app.use("/auth", authRouter);
 app.use("/posts", postRouter);
 app.use("/recommendation", recommendationRouter);
+app.use("/users", userRouter);
 
 app.get("/", authMiddleware, (req, res) => {
   res.send("Hello World!");

@@ -18,7 +18,12 @@ const validationCheck = [
     .withMessage("이메일을 입력해주세요")
     .isEmail()
     .withMessage("이메일이 아닙니다."),
-  check("password").trim().notEmpty().withMessage("비밀번호를 입력해주세요"),
+  check("password")
+    .trim()
+    .notEmpty()
+    .withMessage("비밀번호를 입력해주세요")
+    .isLength({ min: 6 })
+    .withMessage("6자 이상으로 적어주세요!"),
   check("name").trim().notEmpty().withMessage("이름이 뭐에요!?"),
   check("nickname").trim().notEmpty().withMessage("닉네임을 만들어주세요!"),
   check("introduce")

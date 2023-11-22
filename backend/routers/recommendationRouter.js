@@ -20,12 +20,6 @@ recommendationRouter.get("/", authMiddleware, async (req, res) => {
   }
 
   // 로그인 한 유저의 지역 찾기
-  console.log(loggedInUserId);
-  const a = await Userinfo.findOne({
-    where: {
-      userId: loggedInUserId,
-    },
-  });
   const { location } = await Userinfo.findOne({
     where: {
       userId: loggedInUserId,
