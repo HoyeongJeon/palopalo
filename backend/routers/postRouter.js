@@ -7,6 +7,7 @@ const authMiddleware = require("../middlewares/authMiddleware.js");
 
 //글작성
 
+const { User } = require("../../models");
 const { Post } = require("../../models");
 const { Comment } = require("../../models");
 
@@ -81,23 +82,27 @@ postRouter.get("/", async (req, res) => {
 //댓글 작성
 postRouter.post("/:postId/comment", authMiddleware, async (req, res) => {
   const { postId } = req.params;
-  const { userEmail } = res.locals.user;
+  const { loggedInUserId } = res.locals;
 
   const { text } = req.body;
 
   const post = await Post.findByPk(postId);
+  const user = await User.findOne({
+    where: { id: loggedInUserId },
+  });
 
   try {
     if (!post) {
       res.status(400).send({ errorMessage: "게시글이 존재하지 않습니다." });
       return false;
     }
+    console.log(user.nickname);
     const comment = await Comment.create({
-      PostId: postId,
-      userId: userEmail,
-      text: text,
+      postId: postId,
+      nickname: user.nickname,
+      content: text,
     });
-    res.status(200).json(comment, { message: comment });
+    res.status(200).json({ message: Comment });
   } catch (error) {
     console.log(`errorMessage: ${error}`);
   }
@@ -107,12 +112,15 @@ postRouter.post("/:postId/comment", authMiddleware, async (req, res) => {
 
 postRouter.get("/:postId/comments", async (req, res) => {
   const { postId } = req.params;
+  const post = await Post.findOne({
+    where: { id: postId },
+  });
   const comments = await Comment.findAll({
     where: { PostId: postId },
   });
 
   try {
-    if (!comments) {
+    if (!post) {
       return res
         .status(404)
         .send({ errorMessage: "게시글이 존재하지 않습니다." });
