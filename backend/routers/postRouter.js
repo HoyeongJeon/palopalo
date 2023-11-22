@@ -161,6 +161,29 @@ postRouter.put("/:postId/:commentId", authMiddleware, async (req, res) => {
   }
 });
 
-postRouter.delete("/:postId/comment", authMiddleware, async (req, res) => {});
+postRouter.delete("/:postId/:commentId", authMiddleware, async (req, res) => {
+  const { postId, commentId } = req.params;
+  const { loggedInUserId } = res.locals;
+
+  const users = await Userinfo.findOne({
+    where: { userid: loggedInUserId },
+  });
+
+  const comments = await Comment.findOne({
+    where: { postId: postId, id: commentId },
+  });
+
+  try {
+    if (commentId.nickname !== users.nickname) {
+      res.status(400).json({ Message: "작성한 사용자만 삭제 가능합니다." });
+      return false;
+    }
+    await comments.destroy({
+      where: { postId: postId, id: commentId, nickname: users.nickname },
+    });
+  } catch (error) {
+    console.log("error:", error);
+  }
+});
 
 module.exports = postRouter;
