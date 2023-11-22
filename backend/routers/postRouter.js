@@ -6,7 +6,7 @@ const postRouter = express.Router();
 const authMiddleware = require("../middlewares/authMiddleware.js");
 
 //글작성
-
+const { Userinfo } = require("../../models");
 const { User } = require("../../models");
 const { Post } = require("../../models");
 const { Comment } = require("../../models");
@@ -129,6 +129,60 @@ postRouter.get("/:postId/comments", async (req, res) => {
     res.status(200).json(comments);
   } catch (error) {
     console.log("ErrorMessag:", error);
+  }
+});
+
+postRouter.put("/:postId/:commentId", authMiddleware, async (req, res) => {
+  const { postId, commentId } = req.params;
+  const { loggedInUserId } = res.locals;
+
+  const { contentCh } = req.body;
+
+  console.log(loggedInUserId);
+
+  const users = await Userinfo.findOne({
+    where: { userid: loggedInUserId },
+  });
+  const comments = await Comment.findOne({
+    where: { postId: postId, id: commentId },
+  });
+  console.log(users.nickname);
+  console.log(comments.content);
+  try {
+    if (comments.nickname !== users.nickname) {
+      res.status(400).json({ Message: "false" });
+      return false;
+    }
+    await comments.update({
+      content: contentCh,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+postRouter.delete("/:postId/:commentId", authMiddleware, async (req, res) => {
+  const { postId, commentId } = req.params;
+  const { loggedInUserId } = res.locals;
+
+  const users = await Userinfo.findOne({
+    where: { userid: loggedInUserId },
+  });
+
+  const comments = await Comment.findOne({
+    where: { postId: postId, id: commentId },
+  });
+
+  try {
+    if (commentId.nickname !== users.nickname) {
+      res.status(400).json({ Message: "작성한 사용자만 삭제 가능합니다." });
+      return false;
+    }
+    await comments.destroy({
+      where: { postId: postId, id: commentId, nickname: users.nickname },
+    });
+  } catch (error) {
+    console.log("error:", error);
   }
 });
 
