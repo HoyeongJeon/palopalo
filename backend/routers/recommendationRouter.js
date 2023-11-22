@@ -32,6 +32,12 @@ recommendationRouter.get("/", authMiddleware, async (req, res) => {
     limit: 3,
   });
 
+  if (!potentialFriends.length) {
+    return res.status(200).send({
+      success: true,
+      message: "같은 지역에 머무르는 친구가 없어요 😭",
+    });
+  }
   // 같은 지역 사람들 리턴해주기(자기소개랑 같이)
   return res.status(200).send({
     success: true,
