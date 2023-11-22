@@ -8,6 +8,7 @@ const authMiddleware = require("../middlewares/authMiddleware.js");
 //글작성
 
 const { Post } = require("../../models");
+
 postRouter.post("/", authMiddleware, async (req, res) => {
   const { title, content, photo } = req.body;
   const { loggedInUserId } = res.locals; // 미들웨어에서 추출한 loggedInUserId
