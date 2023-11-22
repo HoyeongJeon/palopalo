@@ -118,11 +118,11 @@ postRouter.post("/:postId/comment", authMiddleware, async (req, res) => {
   const { postId } = req.params;
   const { loggedInUserId } = res.locals;
 
-  const { text } = req.body;
+  const { content } = req.body;
 
   const post = await Post.findByPk(postId);
-  const user = await User.findOne({
-    where: { id: loggedInUserId },
+  const user = await Userinfo.findOne({
+    where: { userid: loggedInUserId },
   });
 
   try {
@@ -135,7 +135,7 @@ postRouter.post("/:postId/comment", authMiddleware, async (req, res) => {
     const comment = await Comment.create({
       postId: postId,
       nickname: user.nickname,
-      content: text,
+      content: content,
     });
     return res
       .status(200)
@@ -188,11 +188,12 @@ postRouter.put("/:postId/:commentId", authMiddleware, async (req, res) => {
   const users = await Userinfo.findOne({
     where: { userid: loggedInUserId },
   });
+
   const comments = await Comment.findOne({
     where: { postId: postId, id: commentId },
   });
-  console.log(users.nickname);
-  console.log(comments.content);
+  // console.log(users.nickname);
+  // console.log(comments.content);
   try {
     if (comments.nickname !== users.nickname) {
       return res.status(400).json({
@@ -234,6 +235,7 @@ postRouter.delete("/:postId/:commentId", authMiddleware, async (req, res) => {
     await comments.destroy({
       where: { postId: postId, id: commentId, nickname: users.nickname },
     });
+    res.status(200).json({ Message: "삭제완료!" });
   } catch (error) {
     console.log("error:", error);
     return res
