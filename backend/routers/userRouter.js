@@ -1,17 +1,11 @@
 const express = require("express");
-const { Op } = require("sequelize");
 const { User, Userinfo } = require("../../models");
+const resBody = require("../utils/resBody.js");
 const bcrypt = require("bcrypt");
-
 const authMiddleware = require("../middlewares/authMiddleware.js");
-const userRouter = express.Router();
+const fileUpoadMiddleware = require("../middlewares/fileUploadMiddleware.js");
 
-const resBody = (success, message) => {
-  return {
-    success,
-    message,
-  };
-};
+const userRouter = express.Router();
 
 // 내 프로필 보기
 userRouter.get("/me", authMiddleware, async (req, res) => {
@@ -43,79 +37,91 @@ userRouter.get("/me", authMiddleware, async (req, res) => {
   });
 });
 
-userRouter.patch("/me/edit", authMiddleware, async (req, res) => {
-  // 수정 가능한 정보들 nickname, location, introduce, favorite_weather, password, profile_picture
-  const {
-    password,
-    nickname,
-    location,
-    introduce,
-    favorite_weather,
-    profile_picture,
-  } = req.body;
-  const { loggedInUserId } = res.locals;
-  if (!loggedInUserId) {
-    return res.status(401).json({
-      ...resBody(false, "권한이 없습니다."),
-    });
-  }
-  // 비밀번호를 입력하지 않은 경우
-  if (!password) {
-    return res
-      .status(400)
-      .send({ ...resBody(false, "비밀번호를 입력해주세요.") });
-  }
+userRouter.patch(
+  "/me/edit",
+  authMiddleware,
+  // fileUpoadMiddleware
+  //   .single
+  //   // 여기 form에서 profile_picture 이름 들어가야함
+  //   (),
+  async (req, res) => {
+    // 수정 가능한 정보들 nickname, location, introduce, favorite_weather, password, profile_picture
+    const {
+      password,
+      nickname,
+      location,
+      introduce,
+      favorite_weather,
+      profile_picture,
+    } = req.body;
+    const { loggedInUserId } = res.locals;
+    if (!loggedInUserId) {
+      return res.status(401).json({
+        ...resBody(false, "권한이 없습니다."),
+      });
+    }
+    // 비밀번호를 입력하지 않은 경우
+    if (!password) {
+      return res
+        .status(400)
+        .json({ ...resBody(false, "비밀번호를 입력해주세요.") });
+    }
 
-  const me = await User.findByPk(loggedInUserId);
+    const me = await User.findByPk(loggedInUserId);
 
-  // 유저가 없는 경우
-  if (!me) {
-    return res.status(404).json({
-      ...resBody(false, "유저가 존재하지 않습니다."),
-    });
-  }
-  // 비밀번호가 틀린 경우
-  const isMatch = await bcrypt.compare(password, me.password);
-  if (!isMatch) {
-    return res
-      .status(400)
-      .send({ ...resBody(false, "잘못된 비밀번호입니다.") });
-  }
+    // 유저가 없는 경우
+    if (!me) {
+      return res.status(404).json({
+        ...resBody(false, "유저가 존재하지 않습니다."),
+      });
+    }
+    // 비밀번호가 틀린 경우
+    const isMatch = await bcrypt.compare(password, me.password);
+    if (!isMatch) {
+      return res
+        .status(400)
+        .json({ ...resBody(false, "잘못된 비밀번호입니다.") });
+    }
 
-  const meInfo = await Userinfo.findOne({
-    where: {
-      userId: loggedInUserId,
-    },
-  });
-  //비밀번호 수정
-  let user = {};
-  user.nickname = nickname ? nickname : meInfo.nickname;
-  user.location = location ? location : meInfo.location;
-  user.profile_picture = profile_picture ? profile_picture : me.profile_picture;
-  user.introduce = introduce ? introduce : meInfo.introduce;
-  user.favorite_weather = favorite_weather
-    ? favorite_weather
-    : meInfo.favorite_weather;
-
-  try {
-    await Userinfo.update(
-      {
-        ...user,
+    const meInfo = await Userinfo.findOne({
+      where: {
+        userId: loggedInUserId,
       },
-      {
-        where: {
-          userId: loggedInUserId,
+    });
+    //비밀번호 수정
+    let user = {};
+    user.nickname = nickname ? nickname : meInfo.nickname;
+    user.location = location ? location : meInfo.location;
+    user.profile_picture = profile_picture
+      ? profile_picture
+      : me.profile_picture;
+    user.introduce = introduce ? introduce : meInfo.introduce;
+    user.favorite_weather = favorite_weather
+      ? favorite_weather
+      : meInfo.favorite_weather;
+
+    try {
+      await Userinfo.update(
+        {
+          ...user,
         },
-      }
-    );
-    return res.status(200).json({ ...resBody(true, "정보가 수정되었습니다.") });
-  } catch (error) {
-    console.error(error);
-    return res
-      .status(500)
-      .json({ ...resBody(false, "내 정보 수정에 실패했습니다.") });
+        {
+          where: {
+            userId: loggedInUserId,
+          },
+        }
+      );
+      return res
+        .status(200)
+        .json({ ...resBody(true, "정보가 수정되었습니다.") });
+    } catch (error) {
+      console.error(error);
+      return res
+        .status(500)
+        .json({ ...resBody(false, "내 정보 수정에 실패했습니다.") });
+    }
   }
-});
+);
 
 // 내 비밀번호 수정
 userRouter.patch("/me/password-edit", authMiddleware, async (req, res) => {
@@ -125,7 +131,7 @@ userRouter.patch("/me/password-edit", authMiddleware, async (req, res) => {
   if (!password) {
     return res
       .status(400)
-      .send({ ...resBody(false, "비밀번호를 입력해주세요.") });
+      .json({ ...resBody(false, "비밀번호를 입력해주세요.") });
   }
 
   const me = await User.findByPk(loggedInUserId);
@@ -141,16 +147,16 @@ userRouter.patch("/me/password-edit", authMiddleware, async (req, res) => {
   if (!isMatch) {
     return res
       .status(400)
-      .send({ ...resBody(false, "잘못된 비밀번호입니다.") });
+      .json({ ...resBody(false, "잘못된 비밀번호입니다.") });
   }
 
   if (newPassword !== newPasswordCheck) {
     return res
       .status(400)
-      .send({ ...resBody(false, "비밀번호 확인이 일치하지 않습니다.") });
+      .json({ ...resBody(false, "비밀번호 확인이 일치하지 않습니다.") });
   }
   // 새로운 비밀번호 암호화
-  const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+  const hashedNewPassword = await bcrypt.hash(newPassword, process.env.SALT);
 
   // 새로운 비밀번호 저장
   try {
