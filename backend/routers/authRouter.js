@@ -53,7 +53,7 @@ authRouter.post("/signup", validationCheck, async (req, res) => {
   }
 
   // 보안을 위해 비밀번호는 평문(Plain Text)으로 저장하지 않고 Hash 된 값을 저장합니다
-  const hashedPassword = await bcrypt.hash(password, process.env.SALT);
+  const hashedPassword = await bcrypt.hash(password, Number(process.env.SALT));
 
   try {
     const user = await User.create({
