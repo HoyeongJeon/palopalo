@@ -123,10 +123,12 @@ postRouter.get("/:postId", async (req, res) => {
   });
 
   if (!post) {
-    return res.status(400).json({ errorMessage: "작성된 글이 없습니다." });
+    return res.status(400).json({
+      ...resBody(true, "작성된 글이 없습니다."),
+    });
   }
 
-  res.status(200).json({ post });
+  return res.status(200).json({ success: true, data: post });
 });
 
 //댓글 작성
