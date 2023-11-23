@@ -6,20 +6,11 @@ const { User, Userinfo } = require("../../models");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const validationCheck = require("../middlewares/validationMiddleware.js");
+const resBody = require("../utils/resBody.js");
 const authRouter = express.Router();
-
-const resBody = (success, message) => {
-  return {
-    success,
-    message,
-  };
-};
-
-exports.resBody = resBody;
 
 authRouter.post("/signup", validationCheck, async (req, res) => {
   // favorite weather 아직 안넣음
-
   const {
     email,
     password,
@@ -39,7 +30,7 @@ authRouter.post("/signup", validationCheck, async (req, res) => {
     !nickname ||
     !introduce
   ) {
-    return res.status(400).send({ ...resBody(false, "정보가 비어있습니다.") });
+    return res.status(400).json({ ...resBody(false, "정보가 비어있습니다.") });
   }
 
   // 이메일 중복 체크
@@ -51,18 +42,18 @@ authRouter.post("/signup", validationCheck, async (req, res) => {
   if (duplicatedUsers.length) {
     return res
       .status(409) // 이미 존재하는 리소스와 충돌
-      .send({ ...resBody(false, "이미 존재하는 아이디입니다.") });
+      .json({ ...resBody(false, "이미 존재하는 아이디입니다.") });
   }
 
   // 비밀번호 확인과 일치여부
   if (password !== passwordCheck) {
     return res
       .status(400)
-      .send({ ...resBody(false, "비밀번호가 일치하지 않습니다.") });
+      .json({ ...resBody(false, "비밀번호가 일치하지 않습니다.") });
   }
 
   // 보안을 위해 비밀번호는 평문(Plain Text)으로 저장하지 않고 Hash 된 값을 저장합니다
-  const hashedPassword = await bcrypt.hash(password, 10);
+  const hashedPassword = await bcrypt.hash(password, process.env.SALT);
 
   try {
     const user = await User.create({
@@ -83,7 +74,7 @@ authRouter.post("/signup", validationCheck, async (req, res) => {
     // 회원가입 성공 시, 비밀번호를 제외 한 사용자의 정보를 반환
     // favorite weather 아직 안넣음
 
-    return res.status(201).send({
+    return res.status(201).json({
       ...resBody(true, "회원가입에 성공했습니다."),
       data: {
         id: user.id,
@@ -99,7 +90,7 @@ authRouter.post("/signup", validationCheck, async (req, res) => {
     });
   } catch (error) {
     console.error(error);
-    return res.status(400).send({
+    return res.status(400).json({
       ...resBody(false, "회원가입에 실패했습니다. 다시 시도해주세요"),
     });
   }
@@ -110,7 +101,7 @@ authRouter.post("/login", async (req, res) => {
   if (!email || !password) {
     return res
       .status(400)
-      .send({ ...resBody(false, "아이디 / 비밀번호를 입력해주세요.") });
+      .json({ ...resBody(false, "아이디 / 비밀번호를 입력해주세요.") });
   }
 
   // 이메일 또는 비밀번호 중 하나라도 일치하지 않는다면, 알맞은 Http Status Code와 에러 메세지를 반환.
@@ -121,7 +112,7 @@ authRouter.post("/login", async (req, res) => {
     },
   });
   if (!existUser) {
-    return res.status(400).send({ ...resBody(false, "없는 아이디입니다.") });
+    return res.status(400).json({ ...resBody(false, "없는 아이디입니다.") });
   }
 
   // 비밀번호가 틀린 경우
@@ -129,7 +120,7 @@ authRouter.post("/login", async (req, res) => {
   if (!isMatch) {
     return res
       .status(400)
-      .send({ ...resBody(false, "잘못된 비밀번호입니다.") });
+      .json({ ...resBody(false, "잘못된 비밀번호입니다.") });
   }
 
   const loggedInUserId = existUser.id;
@@ -142,18 +133,18 @@ authRouter.post("/login", async (req, res) => {
 
   res.cookie("Authorization", "Bearer " + token);
 
-  return res.status(200).send({ token });
+  return res.status(200).json({ token });
 });
 
 authRouter.post("/logout", (req, res) => {
   try {
     res.clearCookie("Authorization");
-    return res.status(200).send({ ...resBody(true, "로그아웃 됐습니다.") });
+    return res.status(200).json({ ...resBody(true, "로그아웃 됐습니다.") });
   } catch (error) {
     console.error(error);
     return res
       .status(500)
-      .send({ ...resBody(500, "로그아웃에 실패했습니다.") });
+      .json({ ...resBody(500, "로그아웃에 실패했습니다.") });
   }
 });
 
