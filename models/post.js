@@ -17,6 +17,8 @@ module.exports = (sequelize, DataTypes) => {
       title: DataTypes.STRING,
       content: DataTypes.STRING,
       photo: DataTypes.STRING,
+      author: DataTypes.STRING,
+      userId: DataTypes.INTEGER, //User 에서 참조한 왜래키
     },
     {
       sequelize,

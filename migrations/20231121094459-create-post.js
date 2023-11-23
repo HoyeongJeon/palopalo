@@ -17,6 +17,11 @@ module.exports = {
       },
       photo: {
         type: Sequelize.STRING,
+
+      },
+      author: {
+        type: Sequelize.STRING,
+
       },
       createdAt: {
         allowNull: false,
