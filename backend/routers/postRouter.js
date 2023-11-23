@@ -6,8 +6,9 @@ const postRouter = express.Router();
 const authMiddleware = require("../middlewares/authMiddleware.js");
 
 //글작성
-
-const { User, Post } = require("../../models");
+const { Userinfo } = require("../../models");
+const { User } = require("../../models");
+const { Post } = require("../../models");
 const { Comment } = require("../../models");
 
 postRouter.post("/", authMiddleware, async (req, res) => {
@@ -106,23 +107,27 @@ postRouter.get("/:postId", async (req, res) => {
 //댓글 작성
 postRouter.post("/:postId/comment", authMiddleware, async (req, res) => {
   const { postId } = req.params;
-  const { userEmail } = res.locals.user;
+  const { loggedInUserId } = res.locals;
 
   const { text } = req.body;
 
   const post = await Post.findByPk(postId);
+  const user = await User.findOne({
+    where: { id: loggedInUserId },
+  });
 
   try {
     if (!post) {
       res.status(400).send({ errorMessage: "게시글이 존재하지 않습니다." });
       return false;
     }
+    console.log(user.nickname);
     const comment = await Comment.create({
-      PostId: postId,
-      userId: userEmail,
-      text: text,
+      postId: postId,
+      nickname: user.nickname,
+      content: text,
     });
-    res.status(200).json(comment, { message: comment });
+    res.status(200).json({ message: Comment });
   } catch (error) {
     console.log(`errorMessage: ${error}`);
   }
@@ -132,12 +137,15 @@ postRouter.post("/:postId/comment", authMiddleware, async (req, res) => {
 
 postRouter.get("/:postId/comments", async (req, res) => {
   const { postId } = req.params;
+  const post = await Post.findOne({
+    where: { id: postId },
+  });
   const comments = await Comment.findAll({
     where: { PostId: postId },
   });
 
   try {
-    if (!comments) {
+    if (!post) {
       return res
         .status(404)
         .send({ errorMessage: "게시글이 존재하지 않습니다." });
@@ -146,6 +154,60 @@ postRouter.get("/:postId/comments", async (req, res) => {
     res.status(200).json(comments);
   } catch (error) {
     console.log("ErrorMessag:", error);
+  }
+});
+
+postRouter.put("/:postId/:commentId", authMiddleware, async (req, res) => {
+  const { postId, commentId } = req.params;
+  const { loggedInUserId } = res.locals;
+
+  const { contentCh } = req.body;
+
+  console.log(loggedInUserId);
+
+  const users = await Userinfo.findOne({
+    where: { userid: loggedInUserId },
+  });
+  const comments = await Comment.findOne({
+    where: { postId: postId, id: commentId },
+  });
+  console.log(users.nickname);
+  console.log(comments.content);
+  try {
+    if (comments.nickname !== users.nickname) {
+      res.status(400).json({ Message: "false" });
+      return false;
+    }
+    await comments.update({
+      content: contentCh,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+postRouter.delete("/:postId/:commentId", authMiddleware, async (req, res) => {
+  const { postId, commentId } = req.params;
+  const { loggedInUserId } = res.locals;
+
+  const users = await Userinfo.findOne({
+    where: { userid: loggedInUserId },
+  });
+
+  const comments = await Comment.findOne({
+    where: { postId: postId, id: commentId },
+  });
+
+  try {
+    if (commentId.nickname !== users.nickname) {
+      res.status(400).json({ Message: "작성한 사용자만 삭제 가능합니다." });
+      return false;
+    }
+    await comments.destroy({
+      where: { postId: postId, id: commentId, nickname: users.nickname },
+    });
+  } catch (error) {
+    console.log("error:", error);
   }
 });
 
