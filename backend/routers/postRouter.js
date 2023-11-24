@@ -3,9 +3,12 @@
 
 const express = require("express");
 const postRouter = express.Router();
-const { User, Post, Comment, Userinfo } = require("../../models");
 const authMiddleware = require("../middlewares/authMiddleware.js");
-const resBody = require("../utils/resBody.js");
+
+//글작성
+
+const { User, Post } = require("../../models");
+const { Comment } = require("../../models");
 
 postRouter.post("/", authMiddleware, async (req, res) => {
   const { title, content, photo } = req.body;
@@ -15,9 +18,9 @@ postRouter.post("/", authMiddleware, async (req, res) => {
 
   // 입력 데이터 검증
   if (!title || !content || !photo) {
-    return res.status(400).json({
-      ...resBody(false, "데이터 형식이 올바르지 않습니다."),
-    });
+    return res
+      .status(400)
+      .json({ errorMessage: "데이터 형식이 올바르지 않습니다." });
   }
 
   // User에서 nickname 값을 가져옵니다.
@@ -32,10 +35,7 @@ postRouter.post("/", authMiddleware, async (req, res) => {
     author,
   });
 
-  return res.json({
-    ...resBody(true, "글을 등록하였습니다."),
-    posts: createdPosts,
-  });
+  res.json({ posts: createdPosts, message: "글을 등록하였습니다." });
 });
 
 //글 수정
@@ -46,20 +46,16 @@ postRouter.put("/:postId", authMiddleware, async (req, res) => {
 
   const post = await Post.findOne({ where: { id: postId } });
   if (!post) {
-    return res.status(404).json({
-      ...resBody(false, "글이 존재하지 않습니다."),
-    });
+    return res.status(404).json({ errorMessage: "글이 존재하지 않습니다." });
   }
 
   if (loggedInUserId !== Number(post.userId)) {
-    return res.status(403).json({
-      ...resBody(false, "권한이 없습니다."),
-    });
+    return res.status(403).json({ errorMessage: "권한이 없습니다." });
   }
 
   await Post.update({ title, content, photo }, { where: { id: postId } });
 
-  return res.status(200).json({ ...resBody(true, "게시글이 수정되었습니다.") });
+  res.status(200).json({ success: true });
 });
 
 // 글 삭제
@@ -69,21 +65,17 @@ postRouter.delete("/:postId", authMiddleware, async (req, res) => {
 
   const post = await Post.findOne({ where: { id: postId } });
   if (!post) {
-    return res.status(404).json({
-      ...resBody(false, "글이 존재하지 않습니다."),
-    });
+    return res.status(404).json({ errorMessage: "글이 존재하지 않습니다." });
   }
 
   if (loggedInUserId !== Number(post.userId)) {
-    return res.status(403).json({
-      ...resBody(false, "권한이 없습니다."),
-    });
+    return res.status(403).json({ errorMessage: "권한이 없습니다." });
   }
 
   await Post.destroy({ where: { id: postId } });
-  return res.status(200).json({
-    ...resBody(true, "게시글이 삭제되었습니다."),
-  });
+  res
+    .status(200)
+    .json({ result: "success", message: "상품을 삭제하였습니다." });
 });
 
 //전체 글 조회 API
@@ -92,7 +84,7 @@ postRouter.get("/", async (req, res) => {
     order: [["createdAt", "DESC"]],
   });
 
-  return res.status(200).json({ success: true, data: posts });
+  res.status(200).json({ posts });
 });
 
 // 글 상세 조회 API
@@ -118,33 +110,27 @@ postRouter.post("/:postId/comment", authMiddleware, async (req, res) => {
   const { postId } = req.params;
   const { loggedInUserId } = res.locals;
 
-  const { text } = req.body;
+  const { content } = req.body;
 
   const post = await Post.findByPk(postId);
-  const user = await User.findOne({
-    where: { id: loggedInUserId },
+  const user = await Userinfo.findOne({
+    where: { userid: loggedInUserId },
   });
 
   try {
     if (!post) {
-      return res
-        .status(400)
-        .json({ ...resBody(false, "게시글이 존재하지 않습니다.") });
+      res.status(400).send({ errorMessage: "게시글이 존재하지 않습니다." });
+      return false;
     }
     console.log(user.nickname);
     const comment = await Comment.create({
       postId: postId,
       nickname: user.nickname,
-      content: text,
+      content: content,
     });
-    return res
-      .status(200)
-      .json({ ...resBody(true, "댓글이 생성되었습니다."), comment });
+    res.status(200).json({ message: Comment });
   } catch (error) {
     console.log(`errorMessage: ${error}`);
-    return res
-      .status(500)
-      .json({ ...resBody(false, "댓글 생성에 실패했습니다.") });
   }
 });
 
@@ -161,22 +147,17 @@ postRouter.get("/:postId/comments", async (req, res) => {
 
   try {
     if (!post) {
-      return res.status(404).json({
-        ...resBody(false, "게시글이 존재하지 않습니다."),
-      });
+      return res
+        .status(404)
+        .send({ errorMessage: "게시글이 존재하지 않습니다." });
+      return false;
     }
-    return res
-      .status(200)
-      .json({ ...resBody(true, "댓글 조회에 성공했습니다."), comments });
+    res.status(200).json(comments);
   } catch (error) {
-    console.error("ErrorMessag:", error);
-    return res
-      .status(500)
-      .json({ ...resBody(false, "댓글 조회에 실패했습니다.") });
+    console.log("ErrorMessag:", error);
   }
 });
 
-// 댓글 수정
 postRouter.put("/:postId/:commentId", authMiddleware, async (req, res) => {
   const { postId, commentId } = req.params;
   const { loggedInUserId } = res.locals;
@@ -188,28 +169,23 @@ postRouter.put("/:postId/:commentId", authMiddleware, async (req, res) => {
   const users = await Userinfo.findOne({
     where: { userid: loggedInUserId },
   });
+
   const comments = await Comment.findOne({
     where: { postId: postId, id: commentId },
   });
-  console.log(users.nickname);
-  console.log(comments.content);
+  // console.log(users.nickname);
+  // console.log(comments.content);
   try {
     if (comments.nickname !== users.nickname) {
-      return res.status(400).json({
-        ...resBody(false, "권한이 없습니다."),
-      });
+      res.status(400).json({ Message: "false" });
+      return false;
     }
     await comments.update({
       content: contentCh,
     });
-    return res
-      .status(200)
-      .json({ ...resBody(false, "댓글이 수정되었습니다.") });
+    res.status(200).json({ Message: "수정 성공, success" });
   } catch (error) {
     console.log(error);
-    return res
-      .status(500)
-      .json({ ...resBody(false, "댓글이 수정에 실패했습니다.") });
   }
 });
 
@@ -226,19 +202,18 @@ postRouter.delete("/:postId/:commentId", authMiddleware, async (req, res) => {
   });
 
   try {
-    if (commentId.nickname !== users.nickname) {
-      return res.status(400).json({
-        ...resBody(false, "작성한 사용자만 삭제 가능합니다."),
-      });
+    console.log(users.nickname);
+
+    if (comments.nickname !== users.nickname) {
+      res.status(400).json({ Message: "작성한 사용자만 삭제 가능합니다." });
+      return false;
     }
     await comments.destroy({
       where: { postId: postId, id: commentId, nickname: users.nickname },
     });
+    res.status(200).json({ Message: "삭제완료!" });
   } catch (error) {
     console.log("error:", error);
-    return res
-      .status(500)
-      .json({ ...resBody(false, "댓글 삭제에 실패했습니다.") });
   }
 });
 
