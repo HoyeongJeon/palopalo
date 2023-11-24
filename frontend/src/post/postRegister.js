@@ -9,6 +9,7 @@ function PostRegister() {
   const content = useRef();
   const file = useRef();
 
+  const history = useHistory();
 
   const inputPost = async (event) => {
     event.preventDefault();
