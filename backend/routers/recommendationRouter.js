@@ -1,8 +1,7 @@
 const express = require("express");
-const { Op } = require("sequelize");
-const { sequelize, Userinfo } = require("../../models");
+const { Op, where } = require("sequelize");
+const { User, sequelize, Userinfo } = require("../../models");
 const authMiddleware = require("../middlewares/authMiddleware");
-const resBody = require("../utils/resBody");
 
 const recommendationRouter = express.Router();
 
@@ -15,11 +14,18 @@ recommendationRouter.get("/", authMiddleware, async (req, res) => {
   const { loggedInUserId } = res.locals;
   if (!loggedInUserId) {
     return res.status(401).json({
-      ...resBody(false, "권한이 없습니다."),
+      success: false,
+      message: "권한이 없습니다.",
     });
   }
 
   // 로그인 한 유저의 지역 찾기
+  console.log(loggedInUserId);
+  const a = await Userinfo.findOne({
+    where: {
+      userId: loggedInUserId,
+    },
+  });
   const { location } = await Userinfo.findOne({
     where: {
       userId: loggedInUserId,
@@ -37,12 +43,13 @@ recommendationRouter.get("/", authMiddleware, async (req, res) => {
   });
 
   if (!potentialFriends.length) {
-    return res.status(200).json({
-      ...resBody(true, "같은 지역에 머무르는 친구가 없어요 😭"),
+    return res.status(200).send({
+      success: true,
+      message: "같은 지역에 머무르는 친구가 없어요 😭",
     });
   }
   // 같은 지역 사람들 리턴해주기(자기소개랑 같이)
-  return res.status(200).json({
+  return res.status(200).send({
     success: true,
     recommendation: potentialFriends.map(showFriendInfo),
   });
