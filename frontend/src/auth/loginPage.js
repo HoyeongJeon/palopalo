@@ -22,6 +22,9 @@ function App() {
         password: password.current.value,
       });
       console.log(response.data);
+      if (response.data) {
+        history.push("/posts");
+      }
     } catch (error) {
       console.log("error", error);
     }

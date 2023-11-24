@@ -102,14 +102,14 @@ postRouter.get("/:postId", async (req, res) => {
     where: { id: postId },
     attributes: ["title", "content", "photo"],
   });
-
+  const comments = await Comment.findAll({ where: { postId } });
   if (!post) {
     return res.status(400).json({
       ...resBody(true, "작성된 글이 없습니다."),
     });
   }
 
-  return res.status(200).json({ success: true, data: post });
+  return res.status(200).json({ success: true, data: { post, comments } });
 });
 
 //댓글 작성

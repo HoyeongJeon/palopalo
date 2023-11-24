@@ -6,6 +6,7 @@ import SignupPage from "./auth/signupPage";
 //import axios from "axios";
 import "./App.css";
 import PostRegister from "./post/postRegister";
+import Post from "./post/post";
 
 function App() {
   return (
@@ -20,7 +21,10 @@ function App() {
               <Link to="/signup">Signup</Link>
             </li>
             <li>
-              <Link to="/post">post</Link>
+              <Link to="/postRegister">postRegister</Link>
+            </li>
+            <li>
+              <Link to="/posts">Post</Link>
             </li>
           </ul>
         </nav>
@@ -32,8 +36,11 @@ function App() {
           <Route path="/signup">
             <SignupPage />
           </Route>
-          <Route path="/post">
+          <Route path="/postRegister">
             <PostRegister />
+          </Route>
+          <Route path="/posts">
+            <Post />
           </Route>
         </Switch>
       </div>

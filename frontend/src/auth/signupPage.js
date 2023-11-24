@@ -45,8 +45,11 @@ function SingupPage() {
       //     favorite_weather,
       //   });
       console.log(response.data);
+      if (response.data) {
+        history.push("/login");
+      }
     } catch (error) {
-      console.log("ErrorMessage:", error.response);
+      console.log("ErrorMessage:", error.response.data);
     }
   };
 
