@@ -133,7 +133,7 @@ authRouter.post("/login", async (req, res) => {
 
   res.cookie("Authorization", "Bearer " + token);
 
-  return res.status(200).json({ token });
+  return res.status(200).json({ token, loggedInUserId, name: existUser.name });
 });
 
 authRouter.post("/logout", (req, res) => {

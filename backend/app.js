@@ -7,6 +7,8 @@ const postRouter = require("./routers/postRouter");
 const recommendationRouter = require("./routers/recommendationRouter");
 const authMiddleware = require("./middlewares/authMiddleware");
 const userRouter = require("./routers/userRouter");
+const apiRouter = require("./routers/apiRouter");
+const path = require("path");
 
 const app = express();
 
@@ -25,10 +27,14 @@ app.use("/auth", authRouter);
 app.use("/posts", postRouter);
 app.use("/recommendation", recommendationRouter);
 app.use("/users", userRouter);
+app.use("/api", apiRouter);
 
-app.get("/", authMiddleware, (req, res) => {
-  res.send("Hello World!");
-});
+// app.get("/", authMiddleware, (req, res) => {
+//   res.send("Hello World!");
+// });
+
+app.use("/", express.static(path.join(__dirname, "assets")));
+app.use(express.static("assets"));
 
 app.listen(process.env.PORT, () => {
   console.log(`App listening on PORT ${process.env.PORT}`);
