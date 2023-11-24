@@ -7,6 +7,7 @@ const { User, Post, Comment, Userinfo } = require("../../models");
 const authMiddleware = require("../middlewares/authMiddleware.js");
 const resBody = require("../utils/resBody.js");
 
+// 글 작성
 postRouter.post("/", authMiddleware, async (req, res) => {
   const { title, content, photo } = req.body;
   const { loggedInUserId } = res.locals; // 미들웨어에서 추출한 loggedInUserId
@@ -21,9 +22,10 @@ postRouter.post("/", authMiddleware, async (req, res) => {
   }
 
   // User에서 nickname 값을 가져옵니다.
-  const user = await User.findOne({ where: { id: loggedInUserId } });
+  const user = await Userinfo.findOne({ where: { id: loggedInUserId } });
   const author = user.nickname;
 
+  console.log(author);
   const createdPosts = await Post.create({
     title,
     content,
