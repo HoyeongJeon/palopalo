@@ -5,7 +5,6 @@ import axios from "axios";
 
 function PostRegister() {
   const title = useRef();
-  const password = useRef();
   const content = useRef();
   const file = useRef();
 
