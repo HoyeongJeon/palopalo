@@ -16,12 +16,11 @@ function PostRegister() {
     try {
       const response = await axios({
         method: "post",
-        url: "http://localhost:3000/posts",
+        url: "http://localhost:3000/posts/",
         data: {
           title: title.current.value,
           content: content.current.value,
           photo: file.current.value,
-          password: password.current.value,
         },
       });
       console.log(response.data);
@@ -53,10 +52,6 @@ function PostRegister() {
         <div class="form-group">
           <label for="attach">Attach:</label>
           <input type="file" id="attach" name="attach" ref={file} />
-        </div>
-        <div class="form-group">
-          <label for="password">Password:</label>
-          <input type="password" id="password" name="password" ref={password} />
         </div>
         <div class="btn-group">
           <button type="button" id="cancel" onClick={handleHome}>
