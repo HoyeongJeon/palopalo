@@ -24,7 +24,7 @@ function App() {
               <Link to="/postRegister">postRegister</Link>
             </li>
             <li>
-              <Link to="/post">Post</Link>
+              <Link to="/posts">Post</Link>
             </li>
           </ul>
         </nav>
@@ -39,7 +39,7 @@ function App() {
           <Route path="/postRegister">
             <PostRegister />
           </Route>
-          <Route path="/post">
+          <Route path="/posts">
             <Post />
           </Route>
         </Switch>
