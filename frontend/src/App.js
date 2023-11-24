@@ -1,61 +1,22 @@
-import React, { useState } from 'react';
-import axios from 'axios';
 import './App.css';
 
+import { Routes, Route, Link, useNavigate, Outlet } from 'react-router-dom';
+import Login from './Pages/Login.js';
+import Main from './Pages/Main.js';
+import Post from './Pages/Post.js';
+
 function App() {
-  const [email, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-
-  const handleSignUp = async () => {
-    try {
-      if (!email) {
-        alert('아이디를 입력해 주세요');
-        return false;
-      } else if (!password) {
-        alert('비밀번호를 입력해 주세요');
-      }
-
-      const response = await axios.post('http://localhost:8080/auth/login', {
-        email,
-        password,
-      });
-      console.log(response.data);
-      alert('로그인에 성공하였습니다');
-    } catch (error) {
-      console.log('errorMessage:', error.response);
-    }
-  };
-
+  const navigate = useNavigate();
   return (
-    <div className="login">
-      <h2>로그인</h2>
-      <form>
-        <div className="form">
-          <p>
-            <input
-              className="loginId"
-              type="text"
-              placeholder="아이디"
-              value={email}
-              onChange={event => setUsername(event.currentTarget.value)}
-            />
-          </p>
-          <p>
-            <input
-              className="loginPassword"
-              type="password"
-              placeholder="비밀번호"
-              value={password}
-              onChange={event => setPassword(event.currentTarget.value)}
-            />
-          </p>
-          <p>
-            <button className="loginBtn" type="button" onClick={handleSignUp}>
-              로그인
-            </button>
-          </p>
-        </div>
-      </form>
+    <div className="App">
+      <Routes>
+        <Route path="/" element={<Main />} />
+        <Route path="/auth/login" element={<Login />} />
+        <Route path="/auth/signup" element={<div>회원가입페이지</div>} />
+        <Route path="/post" element={<Post />} />
+        <Route path="/post/:idx" element={<div>게시물 상세보기페이지</div>} />
+        <Route path="*" element={<div>404 없는 페이지입니다.</div>} />
+      </Routes>
     </div>
   );
 }
