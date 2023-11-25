@@ -155,6 +155,42 @@
       </div>
     </div>
 
+    <div
+      class="modal text-left"
+      id="alertPutModal"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="alertModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="alertModalLabel">알림</h5>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+              
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <textarea class="modal-body" id="alertPutText" oninput="putModal()"></textarea>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-outline-sparta btn-confirm"
+              data-dismiss="modal"
+            >
+              확인
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script
@@ -239,6 +275,47 @@
             }
         })
       }
+      function putModal(){
+        let Putcontent = document.getElementById("alertPutText").value;
+        console.log(Putcontent);
+
+        return Putcontent;
+      }
+
+      function putComment(commentId, content) {
+        $("#alertPutModal").show();
+        $("#alertPutText").text(content);
+       
+        const closeBtn = alertPutModal.querySelector(".close");
+        const submitBtn = alertPutModal.querySelector(".btn-confirm");
+        closeBtn.addEventListener("click", e => {
+            alertPutModal.style.display = "none"
+        });
+        submitBtn.addEventListener("click", e => {
+            let resultPutComment = putModal();
+            console.log(resultPutComment);
+                $.ajax({
+                type:"PUT",
+                url: `/posts/4/${commentId}`,
+                headers: {"X-HTTP-Method-Override": "PUT"},
+                dataType: 'json', 
+                
+                data: `{"content": "${resultPutComment}")`,           
+                success: function(response) {
+                  console.log(response);
+                },
+                error : function(error){
+                 console.log(error);
+                }
+
+            })
+            //window.location.reload();
+        })
+        
+        
+        
+
+      }
 
       function deleteComment(commentId) {
         $.ajax({
@@ -265,11 +342,15 @@
                 console.log(response);
                 for(let i = 0; i < response.comments.length; i++) {
                     //console.log(response.comments[i].id)
+                    let content = response.comments[i].content;
+                    let nickname = response.comments[i].nickname;
+                    let id = response.comments[i].id;
                     let htmlTemp = `
                     <li class="comment-item">
-                        <p class="comment-content">${response.comments[i].content}</p>
-                        <p class="comment-author">${response.comments[i].nickname}</p>
-                    <button type="button" onclick="deleteComment(${response.comments[i].id})">삭제</button>
+                        <p class="comment-content">${content}</p>
+                        <p class="comment-author">${nickname}</p>
+                    <button type="button" onclick="deleteComment(${id})">삭제</button>
+                    <button type="button" onclick="putComment(${id},'${content}')">수정</button>
                     </li> `;
                     $("#comment-list").append(htmlTemp);
                 }
@@ -278,6 +359,10 @@
             }
 
         })
+      }
+
+      function putAlert(){
+        
       }
 
       function customAlert(text, confirmCallback) {

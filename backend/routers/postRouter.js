@@ -184,7 +184,7 @@ postRouter.put("/:postId/:commentId", authMiddleware, async (req, res) => {
 
   const { contentCh } = req.body;
 
-  console.log(loggedInUserId);
+  console.log(commentId, postId, contentCh);
 
   const users = await Userinfo.findOne({
     where: { userid: loggedInUserId },
@@ -201,6 +201,7 @@ postRouter.put("/:postId/:commentId", authMiddleware, async (req, res) => {
     await comments.update({
       content: contentCh,
     });
+    console.log(contentCh);
     return res
       .status(200)
       .json({ ...resBody(false, "댓글이 수정되었습니다.") });
