@@ -226,13 +226,17 @@ postRouter.delete("/:postId/:commentId", authMiddleware, async (req, res) => {
   });
 
   try {
-    if (commentId.nickname !== users.nickname) {
+    if (comments.nickname !== users.nickname) {
+      console.log(users.nickname, commentId.nickname, postId);
       return res.status(400).json({
         ...resBody(false, "작성한 사용자만 삭제 가능합니다."),
       });
     }
     await comments.destroy({
       where: { postId: postId, id: commentId, nickname: users.nickname },
+    });
+    return res.status(200).json({
+      ...resBody(true, "댓글이 삭제 되었습니다."),
     });
   } catch (error) {
     console.log("error:", error);
