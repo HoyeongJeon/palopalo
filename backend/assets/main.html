@@ -67,7 +67,7 @@
               <a class="nav-link" href="#">글쓰기</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="/">로그아웃</a>
+              <a class="nav-link" onclick="remove()" href="/">로그아웃</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="#">프로필</a>
@@ -158,6 +158,11 @@
           },
         });
       });
+    </script>
+    <script>
+      function remove() {
+        window.localStorage.removeItem('token');
+      }
     </script>
   </body>
 </html>
