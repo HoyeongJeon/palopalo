@@ -64,7 +64,7 @@
         <div class="nav">
           <ul class="nav nav-underline">
             <li class="nav-item">
-              <a class="nav-link" href="#">글쓰기</a>
+              <a class="nav-link" href="/inputPost.html">글쓰기</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" onclick="remove()" href="/">로그아웃</a>
@@ -154,7 +154,7 @@
           success: function (data) {
             const posts = data.data;
             $.each(posts, function (i) {
-              const tempHtml = `<tr class ="posts" onclick = "window.location.href = '/posts/${posts[i].id}'">
+              const tempHtml = `<tr class ="posts" onclick = "window.location.href = '/post.html?postId=${posts[i].id}'">
                                       <td>${posts[i].id}</td>
                                       <td>${posts[i].title}</td>
                                       <td>${posts[i].author}</td>

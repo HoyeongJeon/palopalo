@@ -33,11 +33,11 @@ function getPostDetail(postId, callback) {
       } else {
         alert("알 수 없는 문제가 발생했습니다. 관리자에게 문의하세요.");
       }
-      window.location.href = "/goods";
+      window.location.href = "/post.html";
     },
     success: function (response) {
       console.log(response);
-      callback(response.goods);
+      //callback(response.goods);
     },
   });
 }

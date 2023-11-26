@@ -112,7 +112,7 @@
             placeholder="댓글을 입력하세요"
           ></textarea>
           <br />
-          <button type="submit" onclick="inputComment()">댓글 작성</button>
+          <button type="button" onclick="inputComment()">댓글 작성</button>
         </form>
         <ul class="comment-list" id="comment-list">
           
@@ -208,6 +208,7 @@
       integrity="sha384-w1Q4orYjBQndcko6MimVbzY0tgp4pWB4lZ7lr30WKz0vr/aWKhXdBNmNb5D92v7s"
       crossorigin="anonymous"
     ></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
     <script src="/api.js"></script>
 
@@ -215,6 +216,8 @@
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
     const postId = urlParams.get("postId");
+
+    
 
       function removePost() {
         $.ajax({
@@ -234,6 +237,27 @@
             }
         })
       } 
+
+      // $("document").ready(function() {
+      //   $.ajax({
+      //     type: "GET",
+      //     url: `/posts/${postId}`, //${postId} 로 변경 해줘야함
+      //     success: function (response) {
+      //       console.log(response);
+      //       let htmlTemp = `
+      //       <div class="container">
+      //           <h2 class="result-title">${response.data.post.title}</h2>
+      //           <p class="result-content">${response.data.post.content}</p>
+
+      //           <button type="submit" onclick="removePost()">글삭제</button>
+      //           `;
+      //           $("#postArea").append(htmlTemp);
+      //     },
+      //     error: function(error){
+      //       console.log(error);
+      //     }
+      //   });
+      // });
 
       function getPost() {
         $.ajax({
@@ -269,6 +293,7 @@
             },
             success: function (response) {
                 console.log(response,"댓글 등록 완료");
+                window.location.reload();
             },
             error: function(error){
                 console.log(error);
@@ -295,7 +320,7 @@
             let resultPutComment = putModal();
             console.log(resultPutComment);
                 $.ajax({
-                type:"POST",
+                type:"PUT",
                 url: `/posts/${postId}/${commentId}`,
                 headers: {"X-HTTP-Method-Override": "PUT"},
                 dataType: 'json', 
@@ -310,10 +335,6 @@
             })
             //window.location.reload();
         })
-        
-        
-        
-
       }
 
       function deleteComment(commentId) {
@@ -360,9 +381,9 @@
         })
       }
 
-      function putAlert(){
+      // function putAlert(){
         
-      }
+      // }
 
       function customAlert(text, confirmCallback) {
         $("#alertText").text(text);
