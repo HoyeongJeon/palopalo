@@ -56,7 +56,7 @@ postRouter.put("/:postId", authMiddleware, async (req, res) => {
     });
   }
 
-  await Post.update({ title, content, photo }, { where: { id: postId } });
+  await Post.update({ title, content /*photo*/ }, { where: { id: postId } });
 
   return res.status(200).json({ ...resBody(true, "게시글이 수정되었습니다.") });
 });
@@ -182,9 +182,11 @@ postRouter.put("/:postId/:commentId", authMiddleware, async (req, res) => {
   const { postId, commentId } = req.params;
   const { loggedInUserId } = res.locals;
 
-  const { contentCh } = req.body;
-
-  console.log(commentId, postId, contentCh);
+  console.log(req.body);
+  console.log("-------------------");
+  const { content } = req.body;
+  console.log("여기");
+  console.log(commentId, postId);
 
   const users = await Userinfo.findOne({
     where: { userid: loggedInUserId },
@@ -199,12 +201,13 @@ postRouter.put("/:postId/:commentId", authMiddleware, async (req, res) => {
       });
     }
     await comments.update({
-      content: contentCh,
+      content: content,
     });
-    console.log(contentCh);
+    console.log("여기2");
+    //console.log(contentCh);
     return res
       .status(200)
-      .json({ ...resBody(false, "댓글이 수정되었습니다.") });
+      .json({ ...resBody(true, "댓글이 수정되었습니다.") });
   } catch (error) {
     console.error(error);
     return res
