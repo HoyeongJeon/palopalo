@@ -2,40 +2,60 @@
 // localhost:3000/posts/
 
 const express = require("express");
-const postRouter = express.Router();
-const { User, Post, Comment, Userinfo } = require("../../models");
+const { Post, Comment, Userinfo } = require("../../models");
 const authMiddleware = require("../middlewares/authMiddleware.js");
+const postImgUploadMiddleware = require("../middlewares/postImgUploadMiddleware.js");
 const resBody = require("../utils/resBody.js");
 
+const postRouter = express.Router();
+
 // 글 작성
-postRouter.post("/", authMiddleware, async (req, res) => {
-  const { title, content, photo } = req.body;
-  const { loggedInUserId } = res.locals; // 미들웨어에서 추출한 loggedInUserId
+postRouter.post(
+  "/",
+  authMiddleware,
+  postImgUploadMiddleware.single("photo"),
+  async (req, res) => {
+    const {
+      body: { title, content },
+      file,
+    } = req;
+    const { loggedInUserId } = res.locals; // 미들웨어에서 추출한 loggedInUserId
+    if (!loggedInUserId) {
+      return res.status(401).json({
+        ...resBody(false, "권한이 없습니다."),
+      });
+    }
+    const user = await Userinfo.findOne({ where: { id: loggedInUserId } });
+    const author = user.nickname;
+    console.log(title, content);
+    // if (!title || !content) {
+    //   return res
+    //     .status(400)
+    //     .json({ errorMessage: "데이터 형식이 올바르지 않습니다." });
+    // }
 
-  // 입력 데이터 검증
-  if (!title || !content || !photo) {
-    return res
-      .status(400)
-      .json({ errorMessage: "데이터 형식이 올바르지 않습니다." });
+    // User에서 nickname 값을 가져옵니다.
+    try {
+      const createdPosts = await Post.create({
+        title,
+        content,
+        photo: file.location,
+        userId: loggedInUserId,
+        author,
+      });
+
+      return res.status(200).json({
+        ...resBody(true, "글을 등록하였습니다."),
+        data: createdPosts,
+      });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({
+        ...resBody(false, "게시글 등록에 실패했습니다."),
+      });
+    }
   }
-
-  // User에서 nickname 값을 가져옵니다.
-  const user = await Userinfo.findOne({ where: { id: loggedInUserId } });
-  const author = user.nickname;
-
-  const createdPosts = await Post.create({
-    title,
-    content,
-    photo,
-    userId: loggedInUserId,
-    author,
-  });
-
-  res.json({
-    ...resBody(false, "글을 등록하였습니다."),
-    data: createdPosts,
-  });
-});
+);
 
 //글 수정
 postRouter.put("/:postId", authMiddleware, async (req, res) => {
@@ -205,9 +225,7 @@ postRouter.put("/:postId/:commentId", authMiddleware, async (req, res) => {
     });
     console.log("여기2");
     //console.log(contentCh);
-    return res
-      .status(200)
-      .json({ ...resBody(true, "댓글이 수정되었습니다.") });
+    return res.status(200).json({ ...resBody(true, "댓글이 수정되었습니다.") });
   } catch (error) {
     console.error(error);
     return res

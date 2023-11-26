@@ -76,7 +76,7 @@
   </head>
   <body>
     <div class="container">
-      <form enctype="multipart/form-data">
+      <form enctype="multipart/form-data" method="POST">
         <div class="form-group">
           <label for="title">Title:</label>
           <input type="text" id="title" name="title" />
@@ -87,14 +87,14 @@
         </div>
         <div class="form-group">
           <label for="attach">Attach:</label>
-          <input type="file" id="photo" name="photo" />
+          <input type="file" id="photo" name="photo" accept="image/*" />
         </div>
 
         <div class="btn-group">
           <button type="button" id="cancel" onclick="window.location.href='/'">
             Cancel
           </button>
-          <button type="button" id="save" onclick="post_input()">Save</button>
+          <button type="button" id="save">Save</button>
         </div>
       </form>
     </div>
@@ -151,36 +151,57 @@
       integrity="sha384-w1Q4orYjBQndcko6MimVbzY0tgp4pWB4lZ7lr30WKz0vr/aWKhXdBNmNb5D92v7s"
       crossorigin="anonymous"
     ></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="/api.js"></script>
 
     <script>
-      function post_input() {
-        let title = $("#title").val();
-        let content = $("#content").val();
-        const photo = $("#photo").val();
-
-        console.log(title, content, photo);
-
-        $.ajax({
-          type: "POST",
-          url: "/posts",
-          data: {
-            title: title,
-            content: content,
-            photo: photo,
-          },
-          success: function (response) {
-            console.log(response);
-            customAlert("게시글이 등록되었습니다.", function () {
-              window.location.replace("/main.html"); // main 화면 제작시 메인 화면으로 이동
-            });
-          },
-          error: function (error) {
-            console.log(error);
-            customAlert(error.responseJSON.errorMessage, "errer");
-          },
+      if (!localStorage.getItem("token")) {
+        getSelf(function () {
+          customAlert("권한이 없습니다. 로그인 페이지로 이동합니다.");
+          window.location.replace("/login.html");
         });
       }
+      const photo = document.querySelector("#photo");
+      const title = document.querySelector("#title");
+      const content = document.querySelector("#content");
+      const saveBtn = document.querySelector("#save");
+
+      const formData = new FormData();
+
+      function fileUpload(event) {
+        formData.append("photo", event.target.files[0]);
+      }
+      async function post_input(e) {
+        e.preventDefault();
+        formData.append("title", title.value);
+        formData.append("content", content.value);
+
+        try {
+          // 먼저 이미지 데이터를 서버에 전송
+          await axios.post("/posts", formData, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+              "Access-Control-Allow-Origin": "*",
+            },
+          });
+
+          // 이미지 전송 후 수행할 작업
+
+          // FormData 초기화
+          formData.delete("photo");
+          formData.delete("title");
+          formData.delete("content");
+
+          customAlert("게시글이 등록되었습니다.");
+          window.location.replace("/main.html");
+        } catch (error) {
+          console.error(error);
+
+          // 오류 처리
+          customAlert(error.response.message);
+        }
+      }
+
       function customAlert(text, confirmCallback) {
         $("#alertText").text(text);
         $("#alertModal").modal("show");
@@ -188,6 +209,8 @@
           $("#alertModal .btn-confirm").click(confirmCallback);
         }
       }
+      photo.addEventListener("change", fileUpload);
+      saveBtn.addEventListener("click", post_input);
     </script>
   </body>
 </html>
