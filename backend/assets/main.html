@@ -70,7 +70,7 @@
               <a class="nav-link" onclick="remove()" href="/">로그아웃</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">프로필</a>
+              <a class="nav-link" href="/profile.html">프로필</a>
             </li>
           </ul>
         </div>
@@ -100,6 +100,9 @@
       integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
       crossorigin="anonymous"
     ></script>
+
+    <script src="/api.js"></script>
+
     <script>
       navigator.geolocation.getCurrentPosition(getWeather, getWeatherError);
       function getWeather(position) {

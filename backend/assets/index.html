@@ -162,8 +162,8 @@
       if (localStorage.getItem("token")) {
         console.log(localStorage.getItem("token"));
         getSelf(function () {
-          alert("이미 로그인이 되어있습니다. 상품 페이지로 이동합니다.");
-          window.location.replace("/goods.html");
+          alert("이미 로그인이 되어있습니다. 메인페이지로 이동합니다.");
+          window.location.replace("/main.html");
         });
       }
 
@@ -180,7 +180,7 @@
           },
           success: function (response) {
             localStorage.setItem("token", response.token);
-            window.location.replace("/goods.html");
+            window.location.replace("/main.html");
           },
           error: function (error) {
             customAlert(error.responseJSON.message);
