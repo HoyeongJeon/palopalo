@@ -94,6 +94,11 @@
         font-size: 12px;
         color: #888;
       }
+      #photo {
+        width: 760px;
+        height: 450px;
+        object-fit: cover;
+      }
     </style>
   </head>
   <body>
@@ -103,7 +108,7 @@
       <form class="comment-form">
         <textarea id="comment" rows="3" placeholder="댓글을 입력하세요"></textarea>
         <br />
-        <button type="button" onclick="inputComment()">댓글 작성</button>
+        <button type="button" class="btn btn-outline-secondary" onclick="inputComment()">댓글 작성</button>
       </form>
       <ul class="comment-list" id="comment-list"></ul>
     </div>
@@ -317,11 +322,11 @@
             let htmlTemp = `
             <div class="container">
                 <h2 class="result-title">${title}</h2>
-                <img src="${photo}" />
+                <img id="photo" src="${photo}" />
                 <p class="result-content">${content}</p>
 
-                <button type="submit" onclick="removePost()">글삭제</button>
-                <button type="submit" onclick="editPost('${title}','${content}')">수정</button>
+                <button type="submit"   class="btn btn-outline-secondary" onclick="removePost()">글삭제</button>
+                <button type="submit"   class="btn btn-outline-secondary"onclick="editPost('${title}','${content}')">수정</button>
                 `;
             $('#postArea').append(htmlTemp);
           },

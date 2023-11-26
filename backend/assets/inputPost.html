@@ -11,10 +11,7 @@
       crossorigin="anonymous"
     />
     <!-- Font Awesome CSS -->
-    <link
-      href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
-      rel="stylesheet"
-    />
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
     <style>
       body {
         background-color: #f1f1f1;
@@ -68,7 +65,7 @@
         padding: 10px 20px;
         border-radius: 5px;
         border: none;
-        background-color: #c1c6ca;
+        background-color: #efefef;
         color: black;
         font-size: 14px;
         cursor: pointer;
@@ -92,17 +89,10 @@
         </div>
 
         <div class="btn-group">
-          <button
-            type="button"
-            class="btn btn-outline-secondary"
-            id="cancel"
-            onclick="window.location.href='/'"
-          >
+          <button type="button" class="btn btn-outline-secondary" id="cancel" onclick="window.location.href='/'">
             Cancel
           </button>
-          <button type="button" class="btn btn-outline-secondary" id="save">
-            Save
-          </button>
+          <button type="button" class="btn btn-outline-secondary" id="save">Save</button>
         </div>
       </form>
     </div>
@@ -119,24 +109,13 @@
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="alertModalLabel">알림</h5>
-            <button
-              type="button"
-              class="close"
-              data-dismiss="modal"
-              aria-label="Close"
-            >
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
           <div class="modal-body" id="alertText"></div>
           <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-outline-sparta btn-confirm"
-              data-dismiss="modal"
-            >
-              확인
-            </button>
+            <button type="button" class="btn btn-outline-sparta btn-confirm" data-dismiss="modal">확인</button>
           </div>
         </div>
       </div>
