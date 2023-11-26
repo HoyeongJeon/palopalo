@@ -1,13 +1,16 @@
 const express = require("express");
-const { Op, where } = require("sequelize");
-const { User, sequelize, Userinfo } = require("../../models");
+const { Op } = require("sequelize");
+const { sequelize, Userinfo } = require("../../models");
 const authMiddleware = require("../middlewares/authMiddleware");
 
 const recommendationRouter = express.Router();
 
 const showFriendInfo = (friend) => ({
+  profile_picture: friend.profile_picture,
   nickname: friend.nickname,
   introduce: friend.introduce,
+  location: friend.location,
+  favorite_weather: friend.favorite_weather,
 });
 
 recommendationRouter.get("/", authMiddleware, async (req, res) => {
@@ -20,12 +23,6 @@ recommendationRouter.get("/", authMiddleware, async (req, res) => {
   }
 
   // 로그인 한 유저의 지역 찾기
-  console.log(loggedInUserId);
-  const a = await Userinfo.findOne({
-    where: {
-      userId: loggedInUserId,
-    },
-  });
   const { location } = await Userinfo.findOne({
     where: {
       userId: loggedInUserId,

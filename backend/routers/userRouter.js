@@ -44,7 +44,6 @@ userRouter.post(
   authMiddleware,
   fileUpoadMiddleware.single("profile_picture"),
   async (req, res) => {
-    // 수정 가능한 정보들 nickname, location, introduce, favorite_weather, password, profile_picture
     const {
       body: {
         nickname,
@@ -61,12 +60,6 @@ userRouter.post(
         ...resBody(false, "권한이 없습니다."),
       });
     }
-    // 비밀번호를 입력하지 않은 경우
-    // if (!password) {
-    //   return res
-    //     .status(400)
-    //     .json({ ...resBody(false, "비밀번호를 입력해주세요.") });
-    // }
 
     const me = await User.findByPk(loggedInUserId);
 
@@ -76,13 +69,6 @@ userRouter.post(
         ...resBody(false, "유저가 존재하지 않습니다."),
       });
     }
-    // 비밀번호가 틀린 경우
-    // const isMatch = await bcrypt.compare(password, me.password);
-    // if (!isMatch) {
-    //   return res
-    //     .status(400)
-    //     .json({ ...resBody(false, "잘못된 비밀번호입니다.") });
-    // }
 
     const meInfo = await Userinfo.findOne({
       where: {
@@ -100,7 +86,7 @@ userRouter.post(
     user.favorite_weather = favorite_weather
       ? favorite_weather
       : meInfo.favorite_weather;
-    user.profile_picture = file ? file.path : meInfo.profile_picture;
+    user.profile_picture = file ? file.location : meInfo.profile_picture;
 
     try {
       await Userinfo.update(
