@@ -135,6 +135,17 @@
     </script>
 
     <script>
+<<<<<<< Updated upstream
+=======
+      if (localStorage.getItem('token') === null) {
+        console.log(localStorage.getItem('token'));
+        getSelf(function () {
+          alert('로그인 해주세요');
+          window.location.replace('/');
+        });
+      }
+
+>>>>>>> Stashed changes
       $('document').ready(function () {
         $.ajax({
           type: 'GET',
