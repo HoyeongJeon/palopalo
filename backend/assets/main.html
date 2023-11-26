@@ -102,7 +102,7 @@
       <input
         id="cityName"
         type="text"
-        placeholder="영어로 압력해주세요."
+        placeholder="영어로 입력해주세요."
         value=""
       />
       <button type="button" class="btn btn-outline-info" onclick="getWeather()">
@@ -266,16 +266,12 @@
             console.log('통신');
           },
           error: function () {
-            //     const regex = '^[ㄱ-ㅎ|가-힣]*$';
-            //     // console.log(/regex/.test('ㅎㅎㅎ'));
-            //     // const isKorStr = Boolean(Pattern.matches(regex, cityName));
-            //     // console.log(isKorStr);
-            //     if (!cityName) {
-            //       alert('검색어가 비어있습니다!');
-            //     } else if (/regex/.match(cityName)) {
-            //       alert('한글 검색 안됩니다!');
-            //       // console.log(Pattern.matches(regex, cityName));
-            //     }
+            const regex = /^[ㄱ-ㅎ|가-힣]*$/;
+            if (!cityName) {
+              alert('검색어가 비어있습니다!');
+            } else if (regex.test(cityName)) {
+              alert('한글 검색은 허용되지 않습니다!');
+            }
           },
         });
       }
