@@ -13,7 +13,7 @@
 
     <style>
       .nav {
-        background-color: rgb(114, 196, 229);
+        background-color: #e9ecef;
         height: 30%;
       }
       .nav-item {
@@ -22,7 +22,7 @@
       }
 
       .nav-link {
-        color: white;
+        color: black;
       }
       .weather {
         height: 300px;
@@ -36,7 +36,7 @@
 
       #cityName {
         height: 36px;
-        border: 2px solid rgb(114, 196, 229);
+        border: 2px solid #c1c6ca;
         border-radius: 8px;
       }
       .icon {
@@ -51,14 +51,14 @@
       }
       .weatherDetail {
         float: left;
-        background-color: rgb(114, 196, 229);
+        background-color: #e9ecef;
         margin-bottom: 50px;
         padding: 10px;
-        border: 2px solid rgb(114, 196, 229);
+        border: 2px solid #e9ecef;
         border-radius: 10px;
       }
       .recommendCloths {
-        background-color: rgb(114, 196, 229);
+        background-color: #e9ecef;
         margin-left: 50%;
         width: 30%;
       }
@@ -105,7 +105,11 @@
         placeholder="영어로 입력해주세요."
         value=""
       />
-      <button type="button" class="btn btn-outline-info" onclick="getWeather()">
+      <button
+        type="button"
+        class="btn btn-outline-secondary"
+        onclick="getWeather()"
+      >
         날씨 가져오기
       </button>
       <h2 class="name"></h2>
