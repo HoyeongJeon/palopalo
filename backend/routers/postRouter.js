@@ -3,7 +3,7 @@
 
 const express = require("express");
 const postRouter = express.Router();
-const { User, Post, Comment, Userinfo } = require("../../models");
+const { Post, Comment, Userinfo } = require("../../models");
 const authMiddleware = require("../middlewares/authMiddleware.js");
 const resBody = require("../utils/resBody.js");
 

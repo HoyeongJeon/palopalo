@@ -3,14 +3,17 @@
 const express = require("express");
 const { Op } = require("sequelize");
 const { User, Userinfo } = require("../../models");
+const { S3Client, GetObjectCommand } = require("@aws-sdk/client-s3");
+const { Readable } = require("stream");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const validationCheck = require("../middlewares/validationMiddleware.js");
+
 const resBody = require("../utils/resBody.js");
 const authRouter = express.Router();
 
 authRouter.post("/signup", validationCheck, async (req, res) => {
-  // favorite weather 아직 안넣음
+  // 이미지 파일 저장하기.
   const {
     email,
     password,
@@ -69,10 +72,10 @@ authRouter.post("/signup", validationCheck, async (req, res) => {
       favorite_weather: favorite_weather
         ? favorite_weather
         : "모든 날씨가 다 좋아~🎶",
+      profile_picture: process.env.S3_NO_PROFILE,
     });
 
     // 회원가입 성공 시, 비밀번호를 제외 한 사용자의 정보를 반환
-    // favorite weather 아직 안넣음
 
     return res.status(201).json({
       ...resBody(true, "회원가입에 성공했습니다."),
