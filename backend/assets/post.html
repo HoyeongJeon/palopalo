@@ -191,6 +191,44 @@
       </div>
     </div>
 
+    <div
+      class="modal text-left"
+      id="alerteditModal"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="alertModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="alertModalLabel">알림</h5>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+              
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <textarea class="result-title" id="alerteditTitle" rows="1" oninput="editPostTitle()"></textarea>
+
+          <textarea class="modal-body" id="alerteditText" oninput="editPostContent()"></textarea>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-outline-sparta btn-confirm"
+              data-dismiss="modal"
+            >
+              확인
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script
@@ -259,18 +297,73 @@
       //   });
       // });
 
+      function editPost(title, content) {
+        //console.log(title);
+        $("#alerteditModal").show();
+        $("#alerteditText").text(content);
+        $("#alerteditTitle").text(title);
+
+        const closeBtn = alerteditModal.querySelector(".close");
+        const submitBtn = alerteditModal.querySelector(".btn-confirm");
+        
+        closeBtn.addEventListener("click", e => {
+            alerteditModal.style.display = "none"
+        });
+        submitBtn.addEventListener("click", e => {
+          let editPostContent1 = editPostContent();
+          let editPostTitle1 = editPostTitle();
+          console.log(editPostContent1);
+          console.log(editPostTitle1);
+          $.ajax({
+            type: "PUT",
+            url: `/posts/${postId}`,
+            headers: {"X-HTTP-Method-Override": "PUT"},
+            dataType: 'json',
+            data:{
+              title: editPostTitle1,
+              content : editPostContent1
+            },
+            success: function(response) {
+              console.log(response);
+            }
+            
+          })
+        })
+      }
+
+      function editPostContent(){
+        let editContent = document.getElementById("alerteditText").value;
+        // 사진파일 변경 작업 해야함.
+
+        //console.log(editContent);
+        //console.log(editTitle);
+        return editContent;
+      }
+
+      function editPostTitle(){
+        let editTitle = document.getElementById("alerteditTitle").value;
+        // 사진파일 변경 작업 해야함.
+
+        //console.log(editContent);
+        //console.log(editTitle);
+        return editTitle;
+      }
+
       function getPost() {
         $.ajax({
           type: "GET",
           url: `/posts/${postId}`, //${postId} 로 변경 해줘야함
           success: function (response) {
             console.log(response);
+            let title = response.data.post.title;
+            let content = response.data.post.content;
             let htmlTemp = `
             <div class="container">
-                <h2 class="result-title">${response.data.post.title}</h2>
-                <p class="result-content">${response.data.post.content}</p>
+                <h2 class="result-title">${title}</h2>
+                <p class="result-content">${content}</p>
 
                 <button type="submit" onclick="removePost()">글삭제</button>
+                <button type="submit" onclick="editPost('${title}','${content}')">수정</button>
                 `;
                 $("#postArea").append(htmlTemp);
           },
@@ -302,7 +395,7 @@
       }
       function putModal(){
         let Putcontent = document.getElementById("alertPutText").value;
-        console.log(Putcontent);
+        //console.log(Putcontent);
 
         return Putcontent;
       }
@@ -327,13 +420,14 @@
                 data:{ content: resultPutComment},           
                 success: function(response) {
                   console.log(response);
+                  console.log(resultPutComment);
                 },
                 error : function(error){
-                 console.log(error);
+                 console.error(error);
                 }
 
             })
-            //window.location.reload();
+            window.location.reload();
         })
       }
 
@@ -350,6 +444,9 @@
             error: function(error) {
                 //console.log(commentId)
                 console.log(error)
+                customAlert(error.responseJSON.message, function() {
+                    //window.location.replace("/inputPost.html");
+                })
             }
         })
       }
