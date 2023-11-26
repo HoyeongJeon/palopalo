@@ -238,7 +238,7 @@
       function getPost() {
         $.ajax({
           type: "GET",
-          url: `/posts/4`, //${postId} 로 변경 해줘야함
+          url: `/posts/${postId}`, //${postId} 로 변경 해줘야함
           success: function (response) {
             console.log(response);
             let htmlTemp = `
@@ -263,7 +263,7 @@
         console.log(content);
         $.ajax({
             type:"POST",
-            url: `posts/4/comment`, //${postId} 로 변경 해줘야함
+            url: `posts/${postId}/comment`, //${postId} 로 변경 해줘야함
             data: {
                 text: content,
             },
@@ -295,12 +295,11 @@
             let resultPutComment = putModal();
             console.log(resultPutComment);
                 $.ajax({
-                type:"PUT",
-                url: `/posts/4/${commentId}`,
+                type:"POST",
+                url: `/posts/${postId}/${commentId}`,
                 headers: {"X-HTTP-Method-Override": "PUT"},
                 dataType: 'json', 
-                
-                data: `{"content": "${resultPutComment}")`,           
+                data:{ content: resultPutComment},           
                 success: function(response) {
                   console.log(response);
                 },
@@ -320,7 +319,7 @@
       function deleteComment(commentId) {
         $.ajax({
             type:"DELETE",
-            url:`/posts/4/${commentId}`, //${postId} 로 변경 해줘야함
+            url:`/posts/${postId}/${commentId}`, //${postId} 로 변경 해줘야함
             success: function(response) {
                 console.log("삭제성공")
                 customAlert("삭제가 완료되었습니다.",function() {
@@ -337,7 +336,7 @@
       function listComment() {
         $.ajax({
             type:"GET",
-            url:`/posts/4/comments`, //${postId} 로 변경 해줘야함
+            url:`/posts/${postId}/comments`, //${postId} 로 변경 해줘야함
             success: function(response) {
                 console.log(response);
                 for(let i = 0; i < response.comments.length; i++) {
