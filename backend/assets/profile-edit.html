@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Bootstrap CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
+      integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2"
+      crossorigin="anonymous"
+    />
+    <!-- Font Awesome CSS -->
+    <link
+      href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+      rel="stylesheet"
+    />
+    <title>Profile Edit</title>
+    <link rel="stylesheet" href="" />
+    <style>
+      *,
+      :before,
+      :after {
+        box-sizing: inherit;
+      }
+      ​body {
+        width: 100%;
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #d9d9d9;
+      }
+      #container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        background-color: #efefef;
+        padding: 30px;
+        border-radius: 8px;
+        min-width: 320px; /* 수정 */
+      }
+      .profile_picture_container {
+        flex-direction: column;
+        justify-content: center;
+        width: 100%;
+        max-width: 288px;
+        margin-left: auto;
+        margin-right: auto;
+        padding: 16px 16px 0;
+        display: flex;
+        align-items: center; /* 추가 */
+      }
+      .profile_img_container {
+        background-color: rgba(
+          var(--sk_foreground_low_solid, 221, 221, 221),
+          1
+        );
+        border-radius: 8px;
+        width: 100%;
+        height: 100%;
+        padding-top: 100%;
+        position: relative;
+        overflow: hidden;
+      }
+      .profile_img {
+        width: 100%;
+        position: absolute;
+        height: 100%;
+        top: 0;
+        left: 0;
+        overflow-clip-margin: content-box;
+        overflow: clip;
+      }
+      .profile_info_container {
+        border: none;
+        flex-direction: column;
+        flex: 1;
+        width: 100%;
+        padding: 16px;
+        display: flex;
+      }
+      .profile_info_name {
+        align-items: center;
+        margin-bottom: 16px;
+      }
+      .profile_info_name_label {
+        font-size: 22px;
+        font-weight: 900;
+        line-height: 1.36365;
+      }
+      .profile_info_name_text {
+        font-size: 18px;
+        font-weight: 700;
+        margin-top: 8px;
+        width: 100%;
+        text-align: left;
+      }
+      .profile_info_edit {
+        margin-top: 8px;
+        color: black;
+        background-color: #efefef;
+        border: none;
+        font-size: 18px;
+        font-weight: 700;
+        height: 20px;
+        min-width: 30px;
+        padding: 0 16px 3px;
+        transition: all 80ms linear;
+        user-select: none;
+        outline: none;
+        cursor: pointer;
+        border-radius: 4px;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+      }
+      .profile_info_editbutton:hover {
+        background-color: rgba(109, 109, 109, 0.9);
+        border: none;
+      }
+      .profile_info_edit:focus {
+        --saf-0: rgba(var(--sk_highlight, 18, 100, 163), 1);
+        box-shadow: 0 0 0 1px var(--saf-0), 0 0 0 5px rgba(29, 155, 209, 0.3);
+      }
+      .profile_info_text {
+        border-radius: 4px;
+        --saf-0: rgba(var(--sk_foreground_high_solid, 134, 134, 134), 1);
+        border: 1px solid var(--saf-0);
+        transition: border 80ms ease-out, box-shadow 80ms ease-out;
+        margin: 0 0 10px;
+        width: 100%;
+        color: rgba(var(--sk_primary_foreground, 29, 28, 29), 1);
+        background-color: rgba(var(--sk_primary_background, 255, 255, 255), 1);
+        padding: 12px;
+        font-size: 18px;
+        font-weight: 700;
+        line-height: 1.33333333;
+        border-style: none;
+        box-sizing: border-box;
+      }
+      .profile_info_label {
+        display: block;
+        text-align: left;
+        padding-bottom: 8px;
+        font-size: 15px;
+        cursor: pointer;
+        line-height: 1.46666667;
+        font-weight: 700;
+      }
+      .button_container {
+        display: flex;
+        flex-wrap: wrap;
+        width: 100%;
+        height: 100%;
+        justify-content: space-around;
+      }
+      .profile_info_button {
+        margin-bottom: 12px;
+        color: black;
+        background-color: #efefef;
+        border: none;
+        font-size: 18px;
+        font-weight: 900;
+        height: 44px;
+        min-width: 96px;
+        padding: 0 16px 3px;
+        transition: all 80ms linear;
+        user-select: none;
+        outline: none;
+        cursor: pointer;
+        border-radius: 4px;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+      }
+      .profile_info_button:hover {
+        background-color: rgba(109, 109, 109, 0.9);
+        border: none;
+      }
+
+      .profile_info_button:focus {
+        --saf-0: rgba(var(--sk_highlight, 18, 100, 163), 1);
+        box-shadow: 0 0 0 1px var(--saf-0), 0 0 0 5px rgba(29, 155, 209, 0.3);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="container">
+      <div class="profile_picture_container">
+        <div class="profile_img_container">
+          <img src="./profile.jpeg" class="profile_img" />
+        </div>
+      </div>
+      <div class="profile_info_container">
+        <form enctype="multipart/form-data" method="POST">
+          <label for="profile_picture" class="profile_info_label"
+            >프로필 사진 설정</label
+          >
+          <input
+            name="profile_picture"
+            id="profile_picture"
+            class="profile_info_edit"
+            type="file"
+            accept="image/*"
+          />
+
+          <label for="nickname" class="profile_info_label">닉네임</label>
+          <input
+            name="nickname"
+            id="nickname"
+            class="profile_info_text"
+            type="text"
+          />
+
+          <label for="favorite_weather" class="profile_info_label"
+            >좋아하는 계절</label
+          >
+          <input
+            name="favorite_weather"
+            id="favorite_weather"
+            class="profile_info_text"
+            type="text"
+          />
+
+          <label for="currentLocation" class="profile_info_label"
+            >거주 지역</label
+          >
+          <input
+            name="currentLocation"
+            id="currentLocation"
+            class="profile_info_text"
+            type="text"
+          />
+
+          <label for="introduce" class="profile_info_label">한줄 소개</label>
+          <input
+            name="introduce"
+            id="introduce"
+            class="profile_info_text"
+            type="text"
+          />
+
+          <div class="button_container">
+            <button class="profile_info_button" type="submit">저장</button>
+          </div>
+        </form>
+        <a class="" href="./password-edit.html">비밀번호 변경하기</a>
+      </div>
+    </div>
+
+    <script
+      src="https://code.jquery.com/jquery-3.5.1.js"
+      integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+      integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js"
+      integrity="sha384-w1Q4orYjBQndcko6MimVbzY0tgp4pWB4lZ7lr30WKz0vr/aWKhXdBNmNb5D92v7s"
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="/api.js"></script>
+
+    <script>
+      if (!localStorage.getItem("token")) {
+        getSelf(function () {
+          customAlert("권한이 없습니다. 로그인 페이지로 이동합니다.");
+          window.location.replace("/login.html");
+        });
+      }
+      const nicknameVal = document.querySelector("#nickname");
+      const favorite_weatherVal = document.querySelector("#favorite_weather");
+      const currentLocationVal = document.querySelector("#currentLocation");
+      const introduceVal = document.querySelector("#introduce");
+      const profile_pictureVal = document.querySelector("#profile_picture");
+      const profile_img = document.querySelector(".profile_img");
+
+      const editBtn = document.querySelector(".profile_info_button");
+
+      const formData = new FormData();
+      function fileUpload(event) {
+        formData.append("profile_picture", event.target.files[0]);
+      }
+
+      function infoSendToBackend(e) {
+        e.preventDefault();
+
+        if (formData.has("profile_picture")) {
+          axios({
+            headers: {
+              "Content-Type": "multipart/form-data",
+              "Access-Control-Allow-Origin": "*",
+            },
+            url: "http://localhost:3000/users/me/edit",
+            method: "POST",
+            data: formData,
+          }).then((response) => {
+            // 서버에 이미지 전송 후 수행할 작업 (예: 프로필 사진 업데이트 등)
+            console.log("Image uploaded successfully");
+            formData.delete("profile_picture"); // 이미지 전송 후 FormData 초기화
+          });
+        }
+
+        let data = {
+          nickname: nicknameVal.value,
+          favorite_weather: favorite_weatherVal.value,
+          location: currentLocationVal.value,
+          introduce: introduceVal.value,
+        };
+
+        axios
+          .post("http://localhost:3000/users/me/edit", JSON.stringify(data), {
+            headers: {
+              "Content-Type": `application/json`, // application/json 타입 선언
+            },
+          })
+          .then((res) => {
+            console.log(res);
+          });
+      }
+
+      async function getUserInfo() {
+        try {
+          const json = await (
+            await fetch("http://localhost:3000/users/me")
+          ).json();
+          const {
+            email,
+            favorite_weather,
+            introduce,
+            location,
+            name,
+            nickname,
+            profile_picture,
+          } = json.user;
+          nicknameVal.value = nickname;
+          favorite_weatherVal.value = favorite_weather;
+          currentLocationVal.value = location;
+          introduceVal.value = introduce;
+          profile_img.src = profile_picture;
+        } catch (err) {
+          console.error(err);
+        }
+        return;
+        axios
+          .get("http://localhost:3000/users/me")
+          .then((res) => console.log(res))
+          .catch((err) => console.error(err))((nicknameVal.value = nickname));
+      }
+
+      getUserInfo();
+
+      profile_pictureVal.addEventListener("change", fileUpload);
+      editBtn.addEventListener("click", infoSendToBackend);
+    </script>
+  </body>
+</html>
