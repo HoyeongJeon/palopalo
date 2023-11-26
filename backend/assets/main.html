@@ -217,7 +217,7 @@
 
       function getWeather() {
         const API_KEY = `dc58332330f0a652f5c647d25bf5d76a`;
-        const cityName = $('#cityName').val();
+        let cityName = $('#cityName').val();
         const url = `https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${API_KEY}&units=metric`;
         document.querySelector('.weatherInfo').innerHTML = '';
         document.querySelector('.name').innerHTML = '';
@@ -236,15 +236,15 @@
             console.log(weatherIcon);
             const tempHtml = `<div class ="weatherDetail">
 
-                                                                 <div class="desc">${weatherDesc}</div>
-                                                                 <div class ="temp">온도 ${data.main.temp} 도</div>
-                                                                 <div class ="feelsLike">체감 온도 ${data.main.feels_like} 도</div>
-                                                                 <div class ="tempMax">최고 기온 ${data.main.temp_max} 도</div>
-                                                                 <div class ="tempMin">최저 기온 ${data.main.temp_min} 도</div>
-                                                                 <td class ="humidity">습도${data.main.humidity} % </td>
-                                                                 <div class = "pressure">기압 ${data.main.pressure} </div>
-                                                                 <div clas = "speed">풍속 ${data.wind.speed} m/s</div>
-                                                             </div>`;
+                                                                       <div class="desc">${weatherDesc}</div>
+                                                                       <div class ="temp">온도 ${data.main.temp} 도</div>
+                                                                       <div class ="feelsLike">체감 온도 ${data.main.feels_like} 도</div>
+                                                                       <div class ="tempMax">최고 기온 ${data.main.temp_max} 도</div>
+                                                                       <div class ="tempMin">최저 기온 ${data.main.temp_min} 도</div>
+                                                                       <td class ="humidity">습도${data.main.humidity} % </td>
+                                                                       <div class = "pressure">기압 ${data.main.pressure} </div>
+                                                                       <div clas = "speed">풍속 ${data.wind.speed} m/s</div>
+                                                                   </div>`;
             $('.name').append(`지금 ${cityName}의 날씨`);
             $('.weatherInfo').append(tempHtml);
             $('.icon').attr('src', weatherIcon);
@@ -266,7 +266,16 @@
             console.log('통신');
           },
           error: function () {
-            console.log('통신에러');
+            //     const regex = '^[ㄱ-ㅎ|가-힣]*$';
+            //     // console.log(/regex/.test('ㅎㅎㅎ'));
+            //     // const isKorStr = Boolean(Pattern.matches(regex, cityName));
+            //     // console.log(isKorStr);
+            //     if (!cityName) {
+            //       alert('검색어가 비어있습니다!');
+            //     } else if (/regex/.match(cityName)) {
+            //       alert('한글 검색 안됩니다!');
+            //       // console.log(Pattern.matches(regex, cityName));
+            //     }
           },
         });
       }
