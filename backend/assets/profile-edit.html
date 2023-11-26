@@ -298,7 +298,7 @@
             method: "POST",
             data: formData,
           }).then((response) => {
-            // 서버에 이미지 전송 후 수행할 작업 (예: 프로필 사진 업데이트 등)
+            // 서버에 이미지 전송 후 수행할 작업
             console.log("Image uploaded successfully");
             formData.delete("profile_picture"); // 이미지 전송 후 FormData 초기화
           });
@@ -319,6 +319,10 @@
           })
           .then((res) => {
             console.log(res);
+            window.location.replace("/profile.html");
+          })
+          .catch((err) => {
+            console.err(err);
           });
       }
 
@@ -345,10 +349,6 @@
           console.error(err);
         }
         return;
-        axios
-          .get("http://localhost:3000/users/me")
-          .then((res) => console.log(res))
-          .catch((err) => console.error(err))((nicknameVal.value = nickname));
       }
 
       getUserInfo();
