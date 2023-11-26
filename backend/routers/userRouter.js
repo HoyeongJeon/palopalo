@@ -37,23 +37,24 @@ userRouter.get("/me", authMiddleware, async (req, res) => {
   });
 });
 
-userRouter.patch(
+// 원래 patch
+// 실험을 위해 post로 변경
+userRouter.post(
   "/me/edit",
   authMiddleware,
-  // fileUpoadMiddleware
-  //   .single
-  //   // 여기 form에서 profile_picture 이름 들어가야함
-  //   (),
+  fileUpoadMiddleware.single("profile_picture"),
   async (req, res) => {
     // 수정 가능한 정보들 nickname, location, introduce, favorite_weather, password, profile_picture
     const {
-      password,
-      nickname,
-      location,
-      introduce,
-      favorite_weather,
-      profile_picture,
-    } = req.body;
+      body: {
+        nickname,
+        location,
+        introduce,
+        favorite_weather,
+        profile_picture,
+      },
+      file,
+    } = req;
     const { loggedInUserId } = res.locals;
     if (!loggedInUserId) {
       return res.status(401).json({
@@ -61,11 +62,11 @@ userRouter.patch(
       });
     }
     // 비밀번호를 입력하지 않은 경우
-    if (!password) {
-      return res
-        .status(400)
-        .json({ ...resBody(false, "비밀번호를 입력해주세요.") });
-    }
+    // if (!password) {
+    //   return res
+    //     .status(400)
+    //     .json({ ...resBody(false, "비밀번호를 입력해주세요.") });
+    // }
 
     const me = await User.findByPk(loggedInUserId);
 
@@ -76,12 +77,12 @@ userRouter.patch(
       });
     }
     // 비밀번호가 틀린 경우
-    const isMatch = await bcrypt.compare(password, me.password);
-    if (!isMatch) {
-      return res
-        .status(400)
-        .json({ ...resBody(false, "잘못된 비밀번호입니다.") });
-    }
+    // const isMatch = await bcrypt.compare(password, me.password);
+    // if (!isMatch) {
+    //   return res
+    //     .status(400)
+    //     .json({ ...resBody(false, "잘못된 비밀번호입니다.") });
+    // }
 
     const meInfo = await Userinfo.findOne({
       where: {
@@ -99,6 +100,7 @@ userRouter.patch(
     user.favorite_weather = favorite_weather
       ? favorite_weather
       : meInfo.favorite_weather;
+    user.profile_picture = file ? file.path : meInfo.profile_picture;
 
     try {
       await Userinfo.update(
@@ -124,7 +126,8 @@ userRouter.patch(
 );
 
 // 내 비밀번호 수정
-userRouter.patch("/me/password-edit", authMiddleware, async (req, res) => {
+// 프론트엔드 폼을 위해 post로 변경
+userRouter.post("/me/password-edit", authMiddleware, async (req, res) => {
   const { password, newPassword, newPasswordCheck } = req.body;
   const { loggedInUserId } = res.locals;
   // 비밀번호를 입력하지 않은 경우
@@ -147,7 +150,13 @@ userRouter.patch("/me/password-edit", authMiddleware, async (req, res) => {
   if (!isMatch) {
     return res
       .status(400)
-      .json({ ...resBody(false, "잘못된 비밀번호입니다.") });
+      .json({ ...resBody(false, "비밀번호가 일치하지 않습니다.") });
+  }
+
+  if (newPassword.length < 6 && newPasswordCheck.length < 6) {
+    return res
+      .status(400)
+      .json({ ...resBody(false, "비밀번호는 최소 6자리 이상이어야 합니다.") });
   }
 
   if (newPassword !== newPasswordCheck) {
@@ -156,7 +165,10 @@ userRouter.patch("/me/password-edit", authMiddleware, async (req, res) => {
       .json({ ...resBody(false, "비밀번호 확인이 일치하지 않습니다.") });
   }
   // 새로운 비밀번호 암호화
-  const hashedNewPassword = await bcrypt.hash(newPassword, process.env.SALT);
+  const hashedNewPassword = await bcrypt.hash(
+    newPassword,
+    Number(process.env.SALT)
+  );
 
   // 새로운 비밀번호 저장
   try {

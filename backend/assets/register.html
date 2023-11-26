@@ -283,16 +283,20 @@
         const password1 = $("#password").val();
         const password2 = $("#passwordCheck").val();
 
-        console.log(
-          nickname,
-          email,
-          name,
-          location,
-          introduce,
-          favorite_weather,
-          password1,
-          password2
-        );
+        if (
+          !nickname ||
+          !email ||
+          !name ||
+          !location ||
+          !introdue ||
+          !favorite_weather ||
+          !password1 ||
+          !password2
+        ) {
+          customAlert("항목을 전부 채워주세요");
+          return;
+        }
+
         $.ajax({
           type: "POST",
           url: "/auth/signup",

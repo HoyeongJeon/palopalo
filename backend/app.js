@@ -1,5 +1,6 @@
 require("dotenv").config();
 const express = require("express");
+const bodyParser = require("body-parser");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const authRouter = require("./routers/authRouter");
@@ -28,6 +29,7 @@ app.use("/posts", postRouter);
 app.use("/recommendation", recommendationRouter);
 app.use("/users", userRouter);
 app.use("/api", apiRouter);
+app.use("/uploads", express.static("uploads"));
 
 // app.get("/", authMiddleware, (req, res) => {
 //   res.send("Hello World!");
