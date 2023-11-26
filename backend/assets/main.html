@@ -67,7 +67,7 @@
               <a class="nav-link" href="#">글쓰기</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="/register.html">로그아웃</a>
+              <a class="nav-link" href="/">로그아웃</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="#">프로필</a>
@@ -114,7 +114,7 @@
           success: function (data) {
             console.log(data);
             console.log(data.weather[0].description);
-            const tempHtml = `<div class ="weatherDetail" onclick = "window.location.href = '/weatherDetail.html'">
+            const tempHtml = `<div class ="weatherDetail">
                                       <div>지금 ${data.name}의 날씨</div>
                                       <div>${data.weather[0].description}</div>
                                       <div>${data.main.temp} 도</div>
