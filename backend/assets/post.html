@@ -226,7 +226,7 @@
           error: function (error) {
             console.log(error);
             customAlert(error.responseJSON.message, function () {
-              //window.location.replace("/inputPost.html");
+              //화면 초기화 부분
             });
           },
         });
@@ -285,8 +285,8 @@
               window.location.reload();
             },
             error: function (error) {
-              console.log(error);
-              aelrt(error.responseJSON.message);
+              console.log(error.responseJSON.message);
+              alert(error.responseJSON.message);
             },
           });
         });
@@ -332,6 +332,9 @@
           },
           error: function (error) {
             console.log(error);
+            customAlert(error.responseJSON.message, function () {
+              //화면 초기화 부분
+            });
           },
         });
       }
@@ -351,6 +354,9 @@
           },
           error: function (error) {
             console.log(error);
+            customAlert(error.responseJSON.message, function () {
+              //화면 초기화 부분
+            });
           },
         });
       }
@@ -386,6 +392,9 @@
             },
             error: function (error) {
               console.error(error);
+              customAlert(error.responseJSON.message, function () {
+                //화면 초기화 부분
+              });
             },
           });
         });
