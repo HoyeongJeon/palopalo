@@ -184,7 +184,7 @@ postRouter.put("/:postId/:commentId", authMiddleware, async (req, res) => {
 
   const { contentCh } = req.body;
 
-  console.log(loggedInUserId);
+  console.log(commentId, postId, contentCh);
 
   const users = await Userinfo.findOne({
     where: { userid: loggedInUserId },
@@ -201,6 +201,7 @@ postRouter.put("/:postId/:commentId", authMiddleware, async (req, res) => {
     await comments.update({
       content: contentCh,
     });
+    console.log(contentCh);
     return res
       .status(200)
       .json({ ...resBody(false, "댓글이 수정되었습니다.") });
@@ -226,13 +227,17 @@ postRouter.delete("/:postId/:commentId", authMiddleware, async (req, res) => {
   });
 
   try {
-    if (commentId.nickname !== users.nickname) {
+    if (comments.nickname !== users.nickname) {
+      console.log(users.nickname, commentId.nickname, postId);
       return res.status(400).json({
         ...resBody(false, "작성한 사용자만 삭제 가능합니다."),
       });
     }
     await comments.destroy({
       where: { postId: postId, id: commentId, nickname: users.nickname },
+    });
+    return res.status(200).json({
+      ...resBody(true, "댓글이 삭제 되었습니다."),
     });
   } catch (error) {
     console.log("error:", error);
