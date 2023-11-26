@@ -11,10 +11,7 @@
       crossorigin="anonymous"
     />
     <!-- Font Awesome CSS -->
-    <link
-      href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
-      rel="stylesheet"
-    />
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
     <style>
       body {
         background-color: #f1f1f1;
@@ -41,9 +38,9 @@
         font-weight: bold;
       }
 
-      .form-group input[type="text"],
-      .form-group input[type="password"],
-      .form-group input[type="file"],
+      .form-group input[type='text'],
+      .form-group input[type='password'],
+      .form-group input[type='file'],
       .form-group textarea {
         width: 100%;
         padding: 10px;
@@ -64,11 +61,12 @@
 
       .btn-group button {
         margin-left: 5px;
+        margin-right: 10px;
         padding: 10px 20px;
         border-radius: 5px;
         border: none;
-        background-color: #007bff;
-        color: #fff;
+        background-color: #efefef;
+        color: black;
         font-size: 14px;
         cursor: pointer;
       }
@@ -91,10 +89,10 @@
         </div>
 
         <div class="btn-group">
-          <button type="button" id="cancel" onclick="window.location.href='/'">
+          <button type="button" class="btn btn-outline-secondary" id="cancel" onclick="window.location.href='/'">
             Cancel
           </button>
-          <button type="button" id="save">Save</button>
+          <button type="button" class="btn btn-outline-secondary" id="save">Save</button>
         </div>
       </form>
     </div>
@@ -111,24 +109,13 @@
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="alertModalLabel">알림</h5>
-            <button
-              type="button"
-              class="close"
-              data-dismiss="modal"
-              aria-label="Close"
-            >
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
           <div class="modal-body" id="alertText"></div>
           <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-outline-sparta btn-confirm"
-              data-dismiss="modal"
-            >
-              확인
-            </button>
+            <button type="button" class="btn btn-outline-sparta btn-confirm" data-dismiss="modal">확인</button>
           </div>
         </div>
       </div>
@@ -155,47 +142,47 @@
     <script src="/api.js"></script>
 
     <script>
-      if (!localStorage.getItem("token")) {
+      if (!localStorage.getItem('token')) {
         getSelf(function () {
-          customAlert("권한이 없습니다. 로그인 페이지로 이동합니다.");
-          window.location.replace("/login.html");
+          customAlert('권한이 없습니다. 로그인 페이지로 이동합니다.');
+          window.location.replace('/login.html');
         });
       }
-      const photo = document.querySelector("#photo");
-      const title = document.querySelector("#title");
-      const content = document.querySelector("#content");
-      const saveBtn = document.querySelector("#save");
+      const photo = document.querySelector('#photo');
+      const title = document.querySelector('#title');
+      const content = document.querySelector('#content');
+      const saveBtn = document.querySelector('#save');
 
       const formData = new FormData();
 
       function fileUpload(event) {
-        formData.append("photo", event.target.files[0]);
+        formData.append('photo', event.target.files[0]);
       }
       async function post_input(e) {
         e.preventDefault();
-        formData.append("title", title.value);
-        formData.append("content", content.value);
+        formData.append('title', title.value);
+        formData.append('content', content.value);
 
         try {
           // 먼저 이미지 데이터를 서버에 전송
-          await axios.post("/posts", formData, {
+          await axios.post('/posts', formData, {
             headers: {
-              "Content-Type": "multipart/form-data",
-              "Access-Control-Allow-Origin": "*",
+              'Content-Type': 'multipart/form-data',
+              'Access-Control-Allow-Origin': '*',
             },
           });
 
           // 이미지 전송 후 수행할 작업
 
           // FormData 초기화
-          formData.delete("photo");
-          formData.delete("title");
-          formData.delete("content");
+          formData.delete('photo');
+          formData.delete('title');
+          formData.delete('content');
 
-          customAlert("게시글이 등록되었습니다.");
-          window.location.replace("/main.html");
+          customAlert('게시글이 등록되었습니다.');
+          window.location.replace('/main.html');
         } catch (error) {
-          console.error(error);
+          // console.error(error);
 
           // 오류 처리
           customAlert(error.response.message);
@@ -203,14 +190,14 @@
       }
 
       function customAlert(text, confirmCallback) {
-        $("#alertText").text(text);
-        $("#alertModal").modal("show");
+        $('#alertText').text(text);
+        $('#alertModal').modal('show');
         if (confirmCallback) {
-          $("#alertModal .btn-confirm").click(confirmCallback);
+          $('#alertModal .btn-confirm').click(confirmCallback);
         }
       }
-      photo.addEventListener("change", fileUpload);
-      saveBtn.addEventListener("click", post_input);
+      photo.addEventListener('change', fileUpload);
+      saveBtn.addEventListener('click', post_input);
     </script>
   </body>
 </html>
