@@ -10,15 +10,15 @@ const s3 = new S3Client({
   region: "ap-northeast-2",
 });
 
-const upload = multer({
+const postImgUpload = multer({
   storage: multerS3({
     s3,
     bucket: "palopalo-img-bucket",
     key(req, file, cb) {
-      cb(null, `original/${Date.now()}_${file.originalname}`);
+      cb(null, `post/${Date.now()}_${file.originalname}`);
     },
   }),
   limits: { fileSize: 5 * 1024 * 1024 },
 });
 
-module.exports = upload;
+module.exports = postImgUpload;
