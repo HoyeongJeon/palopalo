@@ -15,10 +15,8 @@
       .nav {
         background-color: rgb(114, 196, 229);
         height: 30%;
-        border-bottom: 1px solid black;
       }
       .nav-item {
-        /* margin-top: 10px; */
         padding: 20px;
         font-size: x-large;
       }
@@ -31,20 +29,43 @@
         text-align: center;
         margin-top: 50px;
       }
-      #weatherInput {
-        /* background-color: blueviolet; */
-        width: 15%;
-        padding: 6px;
-        border: 2px solid skyblue;
-        border-radius: 10px;
+      .name {
+        font-size: large;
+        margin-left: -80%;
+      }
+
+      #cityName {
+        height: 36px;
+        border: 2px solid rgb(114, 196, 229);
+        border-radius: 8px;
+      }
+      .icon {
+        /* background-color: rgb(114, 196, 229); */
+        margin-left: 50px;
+        margin-top: 30px;
+        float: left;
+      }
+
+      .weatherTitle {
+        margin-bottom: 30px;
       }
       .weatherDetail {
-        background-color: skyblue;
-        /* width: 30%; */
-        margin-left: 35%;
-        margin-top: 30px;
-        /* border: 2px solid skyblue;
-        border-radius: 10px; */
+        float: left;
+        background-color: rgb(114, 196, 229);
+        margin-bottom: 50px;
+        padding: 10px;
+        border: 2px solid rgb(114, 196, 229);
+        border-radius: 10px;
+      }
+      .recommendCloths {
+        background-color: rgb(114, 196, 229);
+        margin-left: 50%;
+        width: 30%;
+      }
+      .cloths {
+        margin-top: 10px;
+        margin-left: 180px;
+        width: 10%;
       }
       table {
         width: 100%;
@@ -77,7 +98,22 @@
       </ul>
     </div>
     <div class="weather">
+      <h2 class="weatherTitle">날씨를 검색해보세요!</h2>
+      <input
+        id="cityName"
+        type="text"
+        placeholder="영어로 압력해주세요."
+        value=""
+      />
+      <button type="button" class="btn btn-outline-info" onclick="getWeather()">
+        날씨 가져오기
+      </button>
+      <h2 class="name"></h2>
+      <img class="icon" />
       <div class="weatherInfo"></div>
+      <div class="recommendCloths"></div>
+
+      <img class="cloths" />
     </div>
     <table>
       <thead>
@@ -102,38 +138,137 @@
     ></script>
 
     <script src="/api.js"></script>
-
     <script>
-      navigator.geolocation.getCurrentPosition(getWeather, getWeatherError);
-      function getWeather(position) {
-        const lat = position.coords.latitude;
-        const lon = position.coords.longitude;
-        const API_KEY = `dc58332330f0a652f5c647d25bf5d76a`;
-        const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric&lang=kr`;
+      weatherDescKo = {
+        201: '가벼운 비를 동반한 천둥구름',
+        200: '비를 동반한 천둥구름',
+        202: '폭우를 동반한 천둥구름',
+        210: '약한 천둥구름',
+        211: '천둥구름',
+        212: '강한 천둥구름',
+        221: '불규칙적 천둥구름',
+        230: '약한 연무를 동반한 천둥구름',
+        231: '연무를 동반한 천둥구름',
+        232: '강한 안개비를 동반한 천둥구름',
+        300: '가벼운 안개비',
+        301: '안개비',
+        302: '강한 안개비',
+        310: '가벼운 적은비',
+        311: '적은비',
+        312: '강한 적은비',
+        313: '소나기와 안개비',
+        314: '강한 소나기와 안개비',
+        321: '소나기',
+        500: '악한 비',
+        501: '중간 비',
+        502: '강한 비',
+        503: '매우 강한 비',
+        504: '극심한 비',
+        511: '우박',
+        520: '약한 소나기 비',
+        521: '소나기 비',
+        522: '강한 소나기 비',
+        531: '불규칙적 소나기 비',
+        600: '가벼운 눈',
+        601: '눈',
+        602: '강한 눈',
+        611: '진눈깨비',
+        612: '소나기 진눈깨비',
+        615: '약한 비와 눈',
+        616: '비와 눈',
+        620: '약한 소나기 눈',
+        621: '소나기 눈',
+        622: '강한 소나기 눈',
+        701: '박무',
+        711: '연기',
+        721: '연무',
+        731: '모래 먼지',
+        741: '안개',
+        751: '모래',
+        761: '먼지',
+        762: '화산재',
+        771: '돌풍',
+        781: '토네이도',
+        800: '구름 한 점 없는 맑은 하늘',
+        801: '약간의 구름이 낀 하늘',
+        802: '드문드문 구름이 낀 하늘',
+        803: '구름이 거의 없는 하늘',
+        804: '구름으로 뒤덮인 흐린 하늘',
+        900: '토네이도',
+        901: '태풍',
+        902: '허리케인',
+        903: '한랭',
+        904: '고온',
+        905: '바람부는',
+        906: '우박',
+        951: '바람이 거의 없는',
+        952: '약한 바람',
+        953: '부드러운 바람',
+        954: '중간 세기 바람',
+        955: '신선한 바람',
+        956: '센 바람',
+        957: '돌풍에 가까운 센 바람',
+        958: '돌풍',
+        959: '심각한 돌풍',
+        960: '폭풍',
+        961: '강한 폭풍',
+        962: '허리케인',
+      };
 
+      function getWeather() {
+        const API_KEY = `dc58332330f0a652f5c647d25bf5d76a`;
+        const cityName = $('#cityName').val();
+        const url = `https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${API_KEY}&units=metric`;
+        document.querySelector('.weatherInfo').innerHTML = '';
+        document.querySelector('.name').innerHTML = '';
+        document.querySelector('.recommendCloths').innerHTML = '';
         $.ajax({
           type: 'GET',
           url: url,
           success: function (data) {
+            const weatherIconNumber = data.weather[0].icon;
+            const weatherIcon = `./weatherIcons/${weatherIconNumber}.png`;
+            const weatherDescNumber = data.weather[0].id;
+            const weatherDesc = weatherDescKo[weatherDescNumber];
+            console.log(weatherDesc);
             console.log(data);
             console.log(data.weather[0].description);
+            console.log(weatherIcon);
             const tempHtml = `<div class ="weatherDetail">
-                                      <div>지금 ${data.name}의 날씨</div>
-                                      <div>${data.weather[0].description}</div>
-                                      <div>${data.main.temp} 도</div>
-                                  </div>`;
-            $('.weatherInfo').append(tempHtml);
 
+                                                                 <div class="desc">${weatherDesc}</div>
+                                                                 <div class ="temp">온도 ${data.main.temp} 도</div>
+                                                                 <div class ="feelsLike">체감 온도 ${data.main.feels_like} 도</div>
+                                                                 <div class ="tempMax">최고 기온 ${data.main.temp_max} 도</div>
+                                                                 <div class ="tempMin">최저 기온 ${data.main.temp_min} 도</div>
+                                                                 <td class ="humidity">습도${data.main.humidity} % </td>
+                                                                 <div class = "pressure">기압 ${data.main.pressure} </div>
+                                                                 <div clas = "speed">풍속 ${data.wind.speed} m/s</div>
+                                                             </div>`;
+            $('.name').append(`지금 ${cityName}의 날씨`);
+            $('.weatherInfo').append(tempHtml);
+            $('.icon').attr('src', weatherIcon);
+            $('.recommendCloths').append(`추천하는 옷 차림`);
+
+            if (data.main.temp < 10) {
+              $('.cloths').attr('src', `./clothes/4.png`);
+              console.log('겨울');
+            } else if (11 < data.main.temp < 13) {
+              $('.cloths').attr('src', `./clothes/1.png`);
+              console.log('봄');
+            } else if (14 < data.main.temp < 22) {
+              $('.cloths').attr('src', `./clothes/3.png`);
+              console.log('가을');
+            } else if (data.main.temp > 23) {
+              $('.cloths').attr('src', `./clothes/2.png`);
+              console.log('여름');
+            }
             console.log('통신');
           },
           error: function () {
             console.log('통신에러');
           },
         });
-      }
-
-      function getWeatherError() {
-        alert('현재 위치를 찾을 수 없습니다.');
       }
     </script>
 

@@ -265,42 +265,42 @@
     <script src="/api.js"></script>
 
     <script>
-      if (!localStorage.getItem("token")) {
+      if (!localStorage.getItem('token')) {
         getSelf(function () {
-          customAlert("권한이 없습니다. 로그인 페이지로 이동합니다.");
-          window.location.replace("/login.html");
+          customAlert('권한이 없습니다. 로그인 페이지로 이동합니다.');
+          window.location.replace('/login.html');
         });
       }
-      const nicknameVal = document.querySelector("#nickname");
-      const favorite_weatherVal = document.querySelector("#favorite_weather");
-      const currentLocationVal = document.querySelector("#currentLocation");
-      const introduceVal = document.querySelector("#introduce");
-      const profile_pictureVal = document.querySelector("#profile_picture");
-      const profile_img = document.querySelector(".profile_img");
+      const nicknameVal = document.querySelector('#nickname');
+      const favorite_weatherVal = document.querySelector('#favorite_weather');
+      const currentLocationVal = document.querySelector('#currentLocation');
+      const introduceVal = document.querySelector('#introduce');
+      const profile_pictureVal = document.querySelector('#profile_picture');
+      const profile_img = document.querySelector('.profile_img');
 
-      const editBtn = document.querySelector(".profile_info_button");
+      const editBtn = document.querySelector('.profile_info_button');
 
       const formData = new FormData();
       function fileUpload(event) {
-        formData.append("profile_picture", event.target.files[0]);
+        formData.append('profile_picture', event.target.files[0]);
       }
 
       function infoSendToBackend(e) {
         e.preventDefault();
 
-        if (formData.has("profile_picture")) {
+        if (formData.has('profile_picture')) {
           axios({
             headers: {
-              "Content-Type": "multipart/form-data",
-              "Access-Control-Allow-Origin": "*",
+              'Content-Type': 'multipart/form-data',
+              'Access-Control-Allow-Origin': '*',
             },
-            url: "http://localhost:3000/users/me/edit",
-            method: "POST",
+            url: 'http://localhost:3002/users/me/edit',
+            method: 'POST',
             data: formData,
-          }).then((response) => {
+          }).then(response => {
             // 서버에 이미지 전송 후 수행할 작업
-            console.log("Image uploaded successfully");
-            formData.delete("profile_picture"); // 이미지 전송 후 FormData 초기화
+            console.log('Image uploaded successfully');
+            formData.delete('profile_picture'); // 이미지 전송 후 FormData 초기화
           });
         }
 
@@ -312,16 +312,16 @@
         };
 
         axios
-          .post("http://localhost:3000/users/me/edit", JSON.stringify(data), {
+          .post('http://localhost:3002/users/me/edit', JSON.stringify(data), {
             headers: {
-              "Content-Type": `application/json`, // application/json 타입 선언
+              'Content-Type': `application/json`, // application/json 타입 선언
             },
           })
-          .then((res) => {
+          .then(res => {
             console.log(res);
-            window.location.replace("/profile.html");
+            window.location.replace('/profile.html');
           })
-          .catch((err) => {
+          .catch(err => {
             console.err(err);
           });
       }
@@ -329,7 +329,7 @@
       async function getUserInfo() {
         try {
           const json = await (
-            await fetch("http://localhost:3000/users/me")
+            await fetch('http://localhost:3002/users/me')
           ).json();
           const {
             email,
@@ -353,8 +353,8 @@
 
       getUserInfo();
 
-      profile_pictureVal.addEventListener("change", fileUpload);
-      editBtn.addEventListener("click", infoSendToBackend);
+      profile_pictureVal.addEventListener('change', fileUpload);
+      editBtn.addEventListener('click', infoSendToBackend);
     </script>
   </body>
 </html>
