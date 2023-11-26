@@ -69,6 +69,7 @@ authRouter.post("/signup", validationCheck, async (req, res) => {
       favorite_weather: favorite_weather
         ? favorite_weather
         : "모든 날씨가 다 좋아~🎶",
+      profile_picture: process.env.S3_NO_PROFILE,
     });
 
     // 회원가입 성공 시, 비밀번호를 제외 한 사용자의 정보를 반환
