@@ -100,24 +100,19 @@
     </style>
   </head>
   <body>
-    <div id="postArea">
-      
-      </div>
-      <div class="comment-section">
-        <h3>댓글</h3>
-        <form class="comment-form">
-          <textarea
-            id="comment"
-            rows="3"
-            placeholder="댓글을 입력하세요"
-          ></textarea>
-          <br />
-          <button type="button" onclick="inputComment()">댓글 작성</button>
-        </form>
-        <ul class="comment-list" id="comment-list">
-          
-        </ul>
-      </div>
+    <div id="postArea"></div>
+    <div class="comment-section">
+      <h3>댓글</h3>
+      <form class="comment-form">
+        <textarea
+          id="comment"
+          rows="3"
+          placeholder="댓글을 입력하세요"
+        ></textarea>
+        <br />
+        <button type="button" onclick="inputComment()">댓글 작성</button>
+      </form>
+      <ul class="comment-list" id="comment-list"></ul>
     </div>
 
     <div
@@ -172,12 +167,15 @@
               class="close"
               data-dismiss="modal"
               aria-label="Close"
-              
             >
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
-          <textarea class="modal-body" id="alertPutText" oninput="putModal()"></textarea>
+          <textarea
+            class="modal-body"
+            id="alertPutText"
+            oninput="putModal()"
+          ></textarea>
           <div class="modal-footer">
             <button
               type="button"
@@ -208,14 +206,22 @@
               class="close"
               data-dismiss="modal"
               aria-label="Close"
-              
             >
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
-          <textarea class="result-title" id="alerteditTitle" rows="1" oninput="editPostTitle()"></textarea>
+          <textarea
+            class="result-title"
+            id="alerteditTitle"
+            rows="1"
+            oninput="editPostTitle()"
+          ></textarea>
 
-          <textarea class="modal-body" id="alerteditText" oninput="editPostContent()"></textarea>
+          <textarea
+            class="modal-body"
+            id="alerteditText"
+            oninput="editPostContent()"
+          ></textarea>
           <div class="modal-footer">
             <button
               type="button"
@@ -251,30 +257,28 @@
     <script src="/api.js"></script>
 
     <script>
-    const queryString = window.location.search;
-    const urlParams = new URLSearchParams(queryString);
-    const postId = urlParams.get("postId");
-
-    
+      const queryString = window.location.search;
+      const urlParams = new URLSearchParams(queryString);
+      const postId = urlParams.get("postId");
 
       function removePost() {
         $.ajax({
-            type:"DELETE",
-            url:`/posts/${postId}`,
-            success: function(response) {
-                console.log("삭제성공")
-                customAlert("삭제가 되었습니다.", function() {
-                    window.location.replace("/inputPost.html");
-                })
-            },
-            error: function(error) {
-                console.log(error);
-                customAlert(error.responseJSON.message, function() {
-                    //window.location.replace("/inputPost.html");
-                })
-            }
-        })
-      } 
+          type: "DELETE",
+          url: `/posts/${postId}`,
+          success: function (response) {
+            console.log("삭제성공");
+            customAlert("삭제가 되었습니다.", function () {
+              window.location.replace("/inputPost.html");
+            });
+          },
+          error: function (error) {
+            console.log(error);
+            customAlert(error.responseJSON.message, function () {
+              //window.location.replace("/inputPost.html");
+            });
+          },
+        });
+      }
 
       // $("document").ready(function() {
       //   $.ajax({
@@ -305,11 +309,11 @@
 
         const closeBtn = alerteditModal.querySelector(".close");
         const submitBtn = alerteditModal.querySelector(".btn-confirm");
-        
-        closeBtn.addEventListener("click", e => {
-            alerteditModal.style.display = "none"
+
+        closeBtn.addEventListener("click", (e) => {
+          alerteditModal.style.display = "none";
         });
-        submitBtn.addEventListener("click", e => {
+        submitBtn.addEventListener("click", (e) => {
           let editPostContent1 = editPostContent();
           let editPostTitle1 = editPostTitle();
           console.log(editPostContent1);
@@ -317,13 +321,13 @@
           $.ajax({
             type: "PUT",
             url: `/posts/${postId}`,
-            headers: {"X-HTTP-Method-Override": "PUT"},
-            dataType: 'json',
-            data:{
+            headers: { "X-HTTP-Method-Override": "PUT" },
+            dataType: "json",
+            data: {
               title: editPostTitle1,
-              content : editPostContent1
+              content: editPostContent1,
             },
-            success: function(response) {
+            success: function (response) {
               console.log(response);
               alert("수정이 완료되었습니다.");
               window.location.reload();
@@ -331,13 +335,12 @@
             error: function (error) {
               console.log(error);
               aelrt(error);
-            }
-            
-          })
-        })
+            },
+          });
+        });
       }
 
-      function editPostContent(){
+      function editPostContent() {
         let editContent = document.getElementById("alerteditText").value;
         // 사진파일 변경 작업 해야함.
 
@@ -346,7 +349,7 @@
         return editContent;
       }
 
-      function editPostTitle(){
+      function editPostTitle() {
         let editTitle = document.getElementById("alerteditTitle").value;
         // 사진파일 변경 작업 해야함.
 
@@ -363,43 +366,43 @@
             console.log(response);
             let title = response.data.post.title;
             let content = response.data.post.content;
+            let photo = response.data.post.photo;
             let htmlTemp = `
             <div class="container">
                 <h2 class="result-title">${title}</h2>
+                <img src="${photo}" />
                 <p class="result-content">${content}</p>
 
                 <button type="submit" onclick="removePost()">글삭제</button>
                 <button type="submit" onclick="editPost('${title}','${content}')">수정</button>
                 `;
-                $("#postArea").append(htmlTemp);
+            $("#postArea").append(htmlTemp);
           },
-          error: function(error){
+          error: function (error) {
             console.log(error);
-          }
+          },
         });
       }
-
-      
 
       function inputComment() {
         let content = $("#comment").val();
         console.log(content);
         $.ajax({
-            type:"POST",
-            url: `posts/${postId}/comment`, //${postId} 로 변경 해줘야함
-            data: {
-                text: content,
-            },
-            success: function (response) {
-                console.log(response,"댓글 등록 완료");
-                window.location.reload();
-            },
-            error: function(error){
-                console.log(error);
-            }
-        })
+          type: "POST",
+          url: `posts/${postId}/comment`, //${postId} 로 변경 해줘야함
+          data: {
+            text: content,
+          },
+          success: function (response) {
+            console.log(response, "댓글 등록 완료");
+            window.location.reload();
+          },
+          error: function (error) {
+            console.log(error);
+          },
+        });
       }
-      function putModal(){
+      function putModal() {
         let Putcontent = document.getElementById("alertPutText").value;
         //console.log(Putcontent);
 
@@ -409,84 +412,79 @@
       function putComment(commentId, content) {
         $("#alertPutModal").show();
         $("#alertPutText").text(content);
-       
+
         const closeBtn = alertPutModal.querySelector(".close");
         const submitBtn = alertPutModal.querySelector(".btn-confirm");
-        closeBtn.addEventListener("click", e => {
-            alertPutModal.style.display = "none"
+        closeBtn.addEventListener("click", (e) => {
+          alertPutModal.style.display = "none";
         });
-        submitBtn.addEventListener("click", e => {
-            let resultPutComment = putModal();
-            console.log(resultPutComment);
-                $.ajax({
-                type:"PUT",
-                url: `/posts/${postId}/${commentId}`,
-                headers: {"X-HTTP-Method-Override": "PUT"},
-                dataType: 'json', 
-                data:{ content: resultPutComment},           
-                success: function(response) {
-                  console.log(response);
-                  alert("수정이 완료되었습니다.");
-                  window.location.reload();
-                },
-                error : function(error){
-                 console.error(error);
-                }
-
-            })
-            
-        })
+        submitBtn.addEventListener("click", (e) => {
+          let resultPutComment = putModal();
+          console.log(resultPutComment);
+          $.ajax({
+            type: "PUT",
+            url: `/posts/${postId}/${commentId}`,
+            headers: { "X-HTTP-Method-Override": "PUT" },
+            dataType: "json",
+            data: { content: resultPutComment },
+            success: function (response) {
+              console.log(response);
+              alert("수정이 완료되었습니다.");
+              window.location.reload();
+            },
+            error: function (error) {
+              console.error(error);
+            },
+          });
+        });
       }
 
       function deleteComment(commentId) {
         $.ajax({
-            type:"DELETE",
-            url:`/posts/${postId}/${commentId}`, //${postId} 로 변경 해줘야함
-            success: function(response) {
-                console.log("삭제성공")
-                customAlert("삭제가 완료되었습니다.",function() {
-                    window.location.reload();
-                })
-            },
-            error: function(error) {
-                //console.log(commentId)
-                console.log(error)
-                customAlert(error.responseJSON.message, function() {
-                    //window.location.replace("/inputPost.html");
-                })
-            }
-        })
+          type: "DELETE",
+          url: `/posts/${postId}/${commentId}`, //${postId} 로 변경 해줘야함
+          success: function (response) {
+            console.log("삭제성공");
+            customAlert("삭제가 완료되었습니다.", function () {
+              window.location.reload();
+            });
+          },
+          error: function (error) {
+            //console.log(commentId)
+            console.log(error);
+            customAlert(error.responseJSON.message, function () {
+              //window.location.replace("/inputPost.html");
+            });
+          },
+        });
       }
 
       function listComment() {
         $.ajax({
-            type:"GET",
-            url:`/posts/${postId}/comments`, //${postId} 로 변경 해줘야함
-            success: function(response) {
-                console.log(response);
-                for(let i = 0; i < response.comments.length; i++) {
-                    //console.log(response.comments[i].id)
-                    let content = response.comments[i].content;
-                    let nickname = response.comments[i].nickname;
-                    let id = response.comments[i].id;
-                    let htmlTemp = `
+          type: "GET",
+          url: `/posts/${postId}/comments`, //${postId} 로 변경 해줘야함
+          success: function (response) {
+            console.log(response);
+            for (let i = 0; i < response.comments.length; i++) {
+              //console.log(response.comments[i].id)
+              let content = response.comments[i].content;
+              let nickname = response.comments[i].nickname;
+              let id = response.comments[i].id;
+              let htmlTemp = `
                     <li class="comment-item">
                         <p class="comment-content">${content}</p>
                         <p class="comment-author">${nickname}</p>
                     <button type="button" onclick="deleteComment(${id})">삭제</button>
                     <button type="button" onclick="putComment(${id},'${content}')">수정</button>
                     </li> `;
-                    $("#comment-list").append(htmlTemp);
-                }
-                
-                
+              $("#comment-list").append(htmlTemp);
             }
-
-        })
+          },
+        });
       }
 
       // function putAlert(){
-        
+
       // }
 
       function customAlert(text, confirmCallback) {
