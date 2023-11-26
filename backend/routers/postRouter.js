@@ -28,11 +28,11 @@ postRouter.post(
     const user = await Userinfo.findOne({ where: { id: loggedInUserId } });
     const author = user.nickname;
     console.log(title, content);
-    // if (!title || !content) {
-    //   return res
-    //     .status(400)
-    //     .json({ errorMessage: "데이터 형식이 올바르지 않습니다." });
-    // }
+    if (!title || !content) {
+      return res
+        .status(400)
+        .json({ errorMessage: "데이터 형식이 올바르지 않습니다." });
+    }
 
     // User에서 nickname 값을 가져옵니다.
     try {
