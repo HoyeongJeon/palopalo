@@ -264,7 +264,7 @@
             success: function(response) {
                 console.log("삭제성공")
                 customAlert("삭제가 되었습니다.", function() {
-                    window.location.replace("/inputPost.html");
+                    window.location.replace("/main.html");
                 })
             },
             error: function(error) {
@@ -330,7 +330,7 @@
             },
             error: function (error) {
               console.log(error);
-              aelrt(error);
+              aelrt(error.responseJSON.message);
             }
             
           })
