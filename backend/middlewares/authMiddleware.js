@@ -8,7 +8,6 @@ const resBody = require("../utils/resBody.js");
 
 const authMiddleware = (req, res, next) => {
   const { Authorization } = req.cookies;
-  console.log(Authorization);
   if (!Authorization) {
     return res.status(401).json({ ...resBody(false, "로그인 해주세요") });
   }

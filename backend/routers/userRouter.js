@@ -44,14 +44,9 @@ userRouter.post(
   authMiddleware,
   fileUpoadMiddleware.single("profile_picture"),
   async (req, res) => {
+    // 수정 가능한 정보들 nickname, location, introduce, favorite_weather, password, profile_picture
     const {
-      body: {
-        nickname,
-        location,
-        introduce,
-        favorite_weather,
-        profile_picture,
-      },
+      body: { nickname, location, introduce, favorite_weather },
       file,
     } = req;
     const { loggedInUserId } = res.locals;
@@ -60,7 +55,7 @@ userRouter.post(
         ...resBody(false, "권한이 없습니다."),
       });
     }
-
+    console.log(file);
     const me = await User.findByPk(loggedInUserId);
 
     // 유저가 없는 경우
@@ -75,13 +70,9 @@ userRouter.post(
         userId: loggedInUserId,
       },
     });
-    //비밀번호 수정
     let user = {};
     user.nickname = nickname ? nickname : meInfo.nickname;
     user.location = location ? location : meInfo.location;
-    user.profile_picture = profile_picture
-      ? profile_picture
-      : me.profile_picture;
     user.introduce = introduce ? introduce : meInfo.introduce;
     user.favorite_weather = favorite_weather
       ? favorite_weather
