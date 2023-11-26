@@ -38,8 +38,7 @@ userRouter.get("/me", authMiddleware, async (req, res) => {
 });
 
 // 원래 patch
-// 실험을 위해 post로 변경
-userRouter.post(
+userRouter.patch(
   "/me/edit",
   authMiddleware,
   fileUpoadMiddleware.single("profile_picture"),
@@ -104,7 +103,7 @@ userRouter.post(
 
 // 내 비밀번호 수정
 // 프론트엔드 폼을 위해 post로 변경
-userRouter.post("/me/password-edit", authMiddleware, async (req, res) => {
+userRouter.patch("/me/password-edit", authMiddleware, async (req, res) => {
   const { password, newPassword, newPasswordCheck } = req.body;
   const { loggedInUserId } = res.locals;
   // 비밀번호를 입력하지 않은 경우
