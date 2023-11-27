@@ -258,7 +258,7 @@
               'Access-Control-Allow-Origin': '*',
             },
             url: '/users/me/edit',
-            method: 'POST',
+            method: 'PATCH',
             data: formData,
           }).then((response) => {
             // 서버에 이미지 전송 후 수행할 작업
@@ -275,7 +275,7 @@
         };
 
         axios
-          .post('/users/me/edit', JSON.stringify(data), {
+          .patch('/users/me/edit', JSON.stringify(data), {
             headers: {
               'Content-Type': `application/json`, // application/json 타입 선언
             },
