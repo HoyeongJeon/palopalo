@@ -3,10 +3,7 @@
   <head>
     <!-- Required meta tags -->
     <meta charset="utf-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, shrink-to-fit=no"
-    />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <link rel="icon" href="/favicon.ico" type="image/x-icon" />
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
     <!-- Bootstrap CSS -->
@@ -17,12 +14,9 @@
       crossorigin="anonymous"
     />
     <!-- Font Awesome CSS -->
-    <link
-      href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
-      rel="stylesheet"
-    />
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
     <!-- <link href="/mystyle.css" rel="stylesheet" /> -->
-    <title>스파르타 쇼핑몰 | 로그인</title>
+    <title>오늘의 날씨 | 로그인</title>
 
     <style>
       .jumbotron {
@@ -41,10 +35,7 @@
   </head>
 
   <body>
-    <div
-      class="jumbotron bg-sparta text-white text-center"
-      onclick="window.location.href='/'"
-    >
+    <div class="jumbotron bg-sparta text-white text-center" onclick="window.location.href='/'">
       <h1 class="font-weight-bold">팔로팔로</h1>
     </div>
     <div class="wrap">
@@ -52,9 +43,7 @@
         <div class="card-body">
           <div class="input-group mb-3">
             <div class="input-group-prepend">
-              <span class="input-group-text" id="basic-addon1"
-                ><i class="fa fa-user-o" aria-hidden="true"></i
-              ></span>
+              <span class="input-group-text" id="basic-addon1"><i class="fa fa-user-o" aria-hidden="true"></i></span>
             </div>
             <input
               type="text"
@@ -67,9 +56,7 @@
           </div>
           <div class="input-group mb-3">
             <div class="input-group-prepend">
-              <span class="input-group-text" id="basic-addon2"
-                ><i class="fa fa-lock" aria-hidden="true"></i
-              ></span>
+              <span class="input-group-text" id="basic-addon2"><i class="fa fa-lock" aria-hidden="true"></i></span>
             </div>
             <input
               type="password"
@@ -82,13 +69,7 @@
           </div>
           <div class="row d-flex justify-content-around">
             <div class="col-6 pr-2">
-              <button
-                type="button"
-                class="btn btn-sparta btn-block"
-                onclick="sign_in()"
-              >
-                로그인
-              </button>
+              <button type="button" class="btn btn-sparta btn-block" onclick="sign_in()">로그인</button>
             </div>
             <div class="col-6 pl-2">
               <button
@@ -115,24 +96,13 @@
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="alertModalLabel">알림</h5>
-            <button
-              type="button"
-              class="close"
-              data-dismiss="modal"
-              aria-label="Close"
-            >
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
           <div class="modal-body" id="alertText"></div>
           <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-outline-sparta"
-              data-dismiss="modal"
-            >
-              확인
-            </button>
+            <button type="button" class="btn btn-outline-sparta" data-dismiss="modal">확인</button>
           </div>
         </div>
       </div>
@@ -159,28 +129,28 @@
     <script src="/api.js"></script>
 
     <script>
-      if (localStorage.getItem("token")) {
-        console.log(localStorage.getItem("token"));
+      if (localStorage.getItem('token')) {
+        console.log(localStorage.getItem('token'));
         getSelf(function () {
-          alert("이미 로그인이 되어있습니다. 메인페이지로 이동합니다.");
-          window.location.replace("/main.html");
+          alert('이미 로그인이 되어있습니다. 메인페이지로 이동합니다.');
+          window.location.replace('/main.html');
         });
       }
 
       function sign_in() {
-        let email = $("#inputEmail").val();
-        let password = $("#inputPassword").val();
+        let email = $('#inputEmail').val();
+        let password = $('#inputPassword').val();
         console.log(email, password);
         $.ajax({
-          type: "POST",
-          url: "/auth/login",
+          type: 'POST',
+          url: '/auth/login',
           data: {
             email: email,
             password: password,
           },
           success: function (response) {
-            localStorage.setItem("token", response.token);
-            window.location.replace("/main.html");
+            localStorage.setItem('token', response.token);
+            window.location.replace('/main.html');
           },
           error: function (error) {
             customAlert(error.responseJSON.message);
@@ -189,8 +159,8 @@
       }
 
       function customAlert(text) {
-        $("#alertText").text(text);
-        $("#alertModal").modal("show");
+        $('#alertText').text(text);
+        $('#alertModal').modal('show');
       }
     </script>
   </body>

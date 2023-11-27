@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>오늘의 날씨 | 프로필</title>
     <style>
       *,
       :before,
@@ -44,10 +44,7 @@
       }
 
       .profile_img_container {
-        background-color: rgba(
-          var(--sk_foreground_low_solid, 221, 221, 221),
-          1
-        );
+        background-color: rgba(var(--sk_foreground_low_solid, 221, 221, 221), 1);
         border-radius: 8px;
         /* width: 100%; */
         width: 300px;
@@ -246,30 +243,22 @@
     <script src="/api.js"></script>
 
     <script>
-      if (!localStorage.getItem("token")) {
+      if (!localStorage.getItem('token')) {
         getSelf(function () {
-          customAlert("권한이 없습니다. 로그인 페이지로 이동합니다.");
-          window.location.replace("/login.html");
+          customAlert('권한이 없습니다. 로그인 페이지로 이동합니다.');
+          window.location.replace('/login.html');
         });
       }
-      const nicknameVal = document.querySelector("#nickname");
-      const favorite_weatherVal = document.querySelector("#favorite_weather");
-      const currentLocationVal = document.querySelector("#currentLocation");
-      const introduceVal = document.querySelector("#introduce");
-      const profileImg = document.querySelector(".profile_img");
+      const nicknameVal = document.querySelector('#nickname');
+      const favorite_weatherVal = document.querySelector('#favorite_weather');
+      const currentLocationVal = document.querySelector('#currentLocation');
+      const introduceVal = document.querySelector('#introduce');
+      const profileImg = document.querySelector('.profile_img');
 
       async function getUserInfo() {
-        const json = await (await fetch("/users/me")).json();
+        const json = await (await fetch('/users/me')).json();
         console.log(json);
-        const {
-          email,
-          favorite_weather,
-          introduce,
-          location,
-          name,
-          nickname,
-          profile_picture,
-        } = json.user;
+        const { email, favorite_weather, introduce, location, name, nickname, profile_picture } = json.user;
 
         nicknameVal.innerHTML = nickname;
         favorite_weatherVal.innerHTML = favorite_weather;
@@ -281,10 +270,10 @@
 
       function getSelf(callback) {
         $.ajax({
-          type: "GET",
-          url: "/api/me",
+          type: 'GET',
+          url: '/api/me',
           headers: {
-            authorization: `Bearer ${localStorage.getItem("token")}`,
+            authorization: `Bearer ${localStorage.getItem('token')}`,
           },
           success: function (response) {
             // console.log(response.user); 닉네임 , loggedInUserId
@@ -292,21 +281,19 @@
           },
           error: function (xhr, status, error) {
             if (status == 401) {
-              customAlert("로그인이 필요합니다.");
+              customAlert('로그인이 필요합니다.');
             } else {
               localStorage.clear();
-              customAlert(
-                "알 수 없는 문제가 발생했습니다. 관리자에게 문의하세요."
-              );
+              customAlert('알 수 없는 문제가 발생했습니다. 관리자에게 문의하세요.');
             }
-            window.location.href = "/";
+            window.location.href = '/';
           },
         });
       }
 
       function customAlert(text) {
-        $("#alertText").text(text);
-        $("#alertModal").modal("show");
+        $('#alertText').text(text);
+        $('#alertModal').modal('show');
       }
     </script>
   </body>
