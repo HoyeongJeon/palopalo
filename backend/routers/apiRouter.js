@@ -1,20 +1,17 @@
-// 댓글, 좋아요
-
-const express = require("express");
-const resBody = require("../utils/resBody.js");
-const authMiddleware = require("../middlewares/authMiddleware.js");
-const { Userinfo } = require("../../models");
+const express = require('express');
+const resBody = require('../utils/resBody.js');
+const authMiddleware = require('../middlewares/authMiddleware.js');
+const { Userinfo } = require('../../models');
 const apiRouter = express.Router();
 
-apiRouter.get("/me", authMiddleware, async (req, res) => {
+apiRouter.get('/me', authMiddleware, async (req, res) => {
   const { loggedInUserId } = res.locals;
   if (!loggedInUserId) {
     return res.status(401).json({
-      ...resBody(false, "권한이 없습니다."),
+      ...resBody(false, '권한이 없습니다.'),
     });
   }
 
-  //   const loggedInUserPrivateInfo = await User.findByPk(loggedInUserId);
   const loggedInUserInfo = await Userinfo.findOne({
     where: {
       userId: loggedInUserId,
