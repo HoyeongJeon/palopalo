@@ -287,6 +287,7 @@
             error: function (error) {
               console.log(error.responseJSON.message);
               alert(error.responseJSON.message);
+              window.location.reload();
             },
           });
         });
@@ -392,9 +393,8 @@
             },
             error: function (error) {
               console.error(error);
-              customAlert(error.responseJSON.message, function () {
-                //화면 초기화 부분
-              });
+              alert(error.responseJSON.message);
+              window.location.reload();
             },
           });
         });
