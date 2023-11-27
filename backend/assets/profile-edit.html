@@ -11,10 +11,7 @@
       crossorigin="anonymous"
     />
     <!-- Font Awesome CSS -->
-    <link
-      href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
-      rel="stylesheet"
-    />
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
     <title>Profile Edit</title>
     <link rel="stylesheet" href="" />
     <style>
@@ -53,10 +50,7 @@
         align-items: center; /* 추가 */
       }
       .profile_img_container {
-        background-color: rgba(
-          var(--sk_foreground_low_solid, 221, 221, 221),
-          1
-        );
+        background-color: rgba(var(--sk_foreground_low_solid, 221, 221, 221), 1);
         border-radius: 8px;
         width: 100%;
         height: 100%;
@@ -98,7 +92,7 @@
         text-align: left;
       }
       .profile_info_edit {
-        margin-top: 8px;
+        margin-top: 0px;
         color: black;
         background-color: #efefef;
         border: none;
@@ -106,7 +100,8 @@
         font-weight: 700;
         height: 20px;
         min-width: 30px;
-        padding: 0 16px 3px;
+        padding: 10px 16px 20px 10px;
+        margin-bottom: 20px;
         transition: all 80ms linear;
         user-select: none;
         outline: none;
@@ -191,52 +186,20 @@
       </div>
       <div class="profile_info_container">
         <form enctype="multipart/form-data" method="POST">
-          <label for="profile_picture" class="profile_info_label"
-            >프로필 사진 설정</label
-          >
-          <input
-            name="profile_picture"
-            id="profile_picture"
-            class="profile_info_edit"
-            type="file"
-            accept="image/*"
-          />
+          <label for="profile_picture" class="profile_info_label">프로필 사진 설정</label>
+          <input name="profile_picture" id="profile_picture" class="profile_info_edit" type="file" accept="image/*" />
 
           <label for="nickname" class="profile_info_label">닉네임</label>
-          <input
-            name="nickname"
-            id="nickname"
-            class="profile_info_text"
-            type="text"
-          />
+          <input name="nickname" id="nickname" class="profile_info_text" type="text" />
 
-          <label for="favorite_weather" class="profile_info_label"
-            >좋아하는 계절</label
-          >
-          <input
-            name="favorite_weather"
-            id="favorite_weather"
-            class="profile_info_text"
-            type="text"
-          />
+          <label for="favorite_weather" class="profile_info_label">좋아하는 계절</label>
+          <input name="favorite_weather" id="favorite_weather" class="profile_info_text" type="text" />
 
-          <label for="currentLocation" class="profile_info_label"
-            >거주 지역</label
-          >
-          <input
-            name="currentLocation"
-            id="currentLocation"
-            class="profile_info_text"
-            type="text"
-          />
+          <label for="currentLocation" class="profile_info_label">거주 지역</label>
+          <input name="currentLocation" id="currentLocation" class="profile_info_text" type="text" />
 
           <label for="introduce" class="profile_info_label">한줄 소개</label>
-          <input
-            name="introduce"
-            id="introduce"
-            class="profile_info_text"
-            type="text"
-          />
+          <input name="introduce" id="introduce" class="profile_info_text" type="text" />
 
           <div class="button_container">
             <button class="profile_info_button" type="submit">저장</button>
@@ -265,42 +228,42 @@
     <script src="/api.js"></script>
 
     <script>
-      if (!localStorage.getItem("token")) {
+      if (!localStorage.getItem('token')) {
         getSelf(function () {
-          customAlert("권한이 없습니다. 로그인 페이지로 이동합니다.");
-          window.location.replace("/login.html");
+          customAlert('권한이 없습니다. 로그인 페이지로 이동합니다.');
+          window.location.replace('/login.html');
         });
       }
-      const nicknameVal = document.querySelector("#nickname");
-      const favorite_weatherVal = document.querySelector("#favorite_weather");
-      const currentLocationVal = document.querySelector("#currentLocation");
-      const introduceVal = document.querySelector("#introduce");
-      const profile_pictureVal = document.querySelector("#profile_picture");
-      const profile_img = document.querySelector(".profile_img");
+      const nicknameVal = document.querySelector('#nickname');
+      const favorite_weatherVal = document.querySelector('#favorite_weather');
+      const currentLocationVal = document.querySelector('#currentLocation');
+      const introduceVal = document.querySelector('#introduce');
+      const profile_pictureVal = document.querySelector('#profile_picture');
+      const profile_img = document.querySelector('.profile_img');
 
-      const editBtn = document.querySelector(".profile_info_button");
+      const editBtn = document.querySelector('.profile_info_button');
 
       const formData = new FormData();
       function fileUpload(event) {
-        formData.append("profile_picture", event.target.files[0]);
+        formData.append('profile_picture', event.target.files[0]);
       }
 
       function infoSendToBackend(e) {
         e.preventDefault();
 
-        if (formData.has("profile_picture")) {
+        if (formData.has('profile_picture')) {
           axios({
             headers: {
-              "Content-Type": "multipart/form-data",
-              "Access-Control-Allow-Origin": "*",
+              'Content-Type': 'multipart/form-data',
+              'Access-Control-Allow-Origin': '*',
             },
-            url: "/users/me/edit",
-            method: "POST",
+            url: '/users/me/edit',
+            method: 'POST',
             data: formData,
           }).then((response) => {
             // 서버에 이미지 전송 후 수행할 작업
-            console.log("Image uploaded successfully");
-            formData.delete("profile_picture"); // 이미지 전송 후 FormData 초기화
+            console.log('Image uploaded successfully');
+            formData.delete('profile_picture'); // 이미지 전송 후 FormData 초기화
           });
         }
 
@@ -312,14 +275,14 @@
         };
 
         axios
-          .post("/users/me/edit", JSON.stringify(data), {
+          .post('/users/me/edit', JSON.stringify(data), {
             headers: {
-              "Content-Type": `application/json`, // application/json 타입 선언
+              'Content-Type': `application/json`, // application/json 타입 선언
             },
           })
           .then((res) => {
             console.log(res);
-            window.location.replace("/profile.html");
+            window.location.replace('/profile.html');
           })
           .catch((err) => {
             console.err(err);
@@ -328,16 +291,8 @@
 
       async function getUserInfo() {
         try {
-          const json = await (await fetch("/users/me")).json();
-          const {
-            email,
-            favorite_weather,
-            introduce,
-            location,
-            name,
-            nickname,
-            profile_picture,
-          } = json.user;
+          const json = await (await fetch('/users/me')).json();
+          const { email, favorite_weather, introduce, location, name, nickname, profile_picture } = json.user;
           nicknameVal.value = nickname;
           favorite_weatherVal.value = favorite_weather;
           currentLocationVal.value = location;
@@ -351,8 +306,8 @@
 
       getUserInfo();
 
-      profile_pictureVal.addEventListener("change", fileUpload);
-      editBtn.addEventListener("click", infoSendToBackend);
+      profile_pictureVal.addEventListener('change', fileUpload);
+      editBtn.addEventListener('click', infoSendToBackend);
     </script>
   </body>
 </html>
