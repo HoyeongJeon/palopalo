@@ -7,13 +7,13 @@ const s3 = new S3Client({
     accessKeyId: process.env.S3_ACCESS_KEY_ID,
     secretAccessKey: process.env.S3_SECRET_ACCESS_KEY,
   },
-  region: 'ap-northeast-2',
+  region: process.env.S3_REGION,
 });
 
 const upload = multer({
   storage: multerS3({
     s3,
-    bucket: 'palopalo-img-bucket',
+    bucket: process.env.S3_BUCKET,
     key(req, file, cb) {
       cb(null, `original/${Date.now()}_${file.originalname}`);
     },
